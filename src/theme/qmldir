@@ -1,0 +1,4 @@
+singleton Theme 1.0 Theme.qml
+BaseTheme 1.0 BaseTheme.qml
+DarkTheme 1.0 DarkTheme.qml
+LightTheme 1.0 LightTheme.qml

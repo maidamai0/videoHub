@@ -1,0 +1,22 @@
+<RCC>
+    <qresource prefix="/">
+        <file>theme/Theme.qml</file>
+        <file>theme/DarkTheme.qml</file>
+        <file>theme/LightTheme.qml</file>
+        <file>theme/BaseTheme.qml</file>
+        <file>theme/qmldir</file>
+        <file>fonts/FontAwesome.qml</file>
+        <file>fonts/qmldir</file>
+        <file>fonts/Font Awesome 5 Brands-Regular-400.otf</file>
+        <file>fonts/Font Awesome 5 Free-Regular-400.otf</file>
+        <file>fonts/Font Awesome 5 Free-Solid-900.otf</file>
+        <file>fonts/Icons.qml</file>
+        <file>ui/Navigation.qml</file>
+        <file>MainWindow.qml</file>
+        <file>controls/SimpleButton.qml</file>
+        <file>ui/WindowHeader.qml</file>
+        <file>ui/Content.qml</file>
+        <file>ui/NewItemPage.qml</file>
+        <file>ui/LocalPage.qml</file>
+    </qresource>
+</RCC>
