@@ -1,0 +1,12 @@
+[submodule "third_party/doctest"]
+	path = third_party/doctest
+	url = https://github.com/onqtam/doctest
+[submodule "third_party/tomlplusplus"]
+	path = third_party/tomlplusplus
+	url = https://github.com/marzer/tomlplusplus
+[submodule "third_party/fmtlib"]
+	path = third_party/fmtlib
+	url = https://github.com/fmtlib/fmt
+[submodule "cmake/qmlplugin"]
+	path = cmake/qmlplugin
+	url = git@github.com:maidamai0/cmake-qmlplugin.git
