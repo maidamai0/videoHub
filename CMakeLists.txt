@@ -8,5 +8,7 @@ set(CMAKE_COMPILE_COMMANDS on)
 # cmake module
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
+include(CPack)
+
 add_subdirectory(src)
 

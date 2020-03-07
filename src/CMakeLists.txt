@@ -11,7 +11,12 @@ foreach(qt5lib ${QT5_COMPONENTS})
     link_libraries(Qt5::${qt5lib})
 endforeach()
 
+add_subdirectory(model)
+add_subdirectory(view)
+
 add_executable(${PROJECT_NAME} main.cpp resource.qrc)
+
+target_link_libraries(${PROJECT_NAME} model)
 
 install(TARGETS ${PROJECT_NAME})
 

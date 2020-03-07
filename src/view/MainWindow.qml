@@ -4,7 +4,7 @@ import QtQuick.Controls 2.13
 
 import "./theme"
 import "./fonts"
-import "./ui"
+import "./page"
 import "./controls"
 
 Window {
@@ -53,7 +53,7 @@ Window {
         Rectangle {
             id: content
             SplitView.preferredHeight: parent.height
-            SplitView.minimumWidth: 200
+            SplitView.minimumWidth: 500
             SplitView.fillWidth: true
             color: "transparent"
 

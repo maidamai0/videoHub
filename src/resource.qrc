@@ -1,22 +1,25 @@
+<?xml version="1.0" ?>
 <RCC>
     <qresource prefix="/">
-        <file>theme/Theme.qml</file>
-        <file>theme/DarkTheme.qml</file>
-        <file>theme/LightTheme.qml</file>
-        <file>theme/BaseTheme.qml</file>
-        <file>theme/qmldir</file>
-        <file>fonts/FontAwesome.qml</file>
-        <file>fonts/qmldir</file>
-        <file>fonts/Font Awesome 5 Brands-Regular-400.otf</file>
-        <file>fonts/Font Awesome 5 Free-Regular-400.otf</file>
-        <file>fonts/Font Awesome 5 Free-Solid-900.otf</file>
-        <file>fonts/Icons.qml</file>
-        <file>ui/Navigation.qml</file>
-        <file>MainWindow.qml</file>
-        <file>controls/SimpleButton.qml</file>
-        <file>ui/WindowHeader.qml</file>
-        <file>ui/Content.qml</file>
-        <file>ui/NewItemPage.qml</file>
-        <file>ui/LocalPage.qml</file>
+        <file>view/MainWindow.qml</file>
+        <file>view/controls/SimpleButton.qml</file>
+        <file>view/fonts/Font Awesome 5 Brands-Regular-400.otf</file>
+        <file>view/fonts/Font Awesome 5 Free-Regular-400.otf</file>
+        <file>view/fonts/Font Awesome 5 Free-Solid-900.otf</file>
+        <file>view/fonts/FontAwesome.qml</file>
+        <file>view/fonts/Icons.qml</file>
+        <file>view/fonts/qmldir</file>
+        <file>view/page/Config.qml</file>
+        <file>view/page/Content.qml</file>
+        <file>view/page/Input.qml</file>
+        <file>view/page/LocalPage.qml</file>
+        <file>view/page/Navigation.qml</file>
+        <file>view/page/NewItemPage.qml</file>
+        <file>view/page/WindowHeader.qml</file>
+        <file>view/theme/BaseTheme.qml</file>
+        <file>view/theme/DarkTheme.qml</file>
+        <file>view/theme/LightTheme.qml</file>
+        <file>view/theme/qmldir</file>
+        <file>view/theme/Theme.qml</file>
     </qresource>
 </RCC>

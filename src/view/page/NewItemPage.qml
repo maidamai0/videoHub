@@ -13,24 +13,16 @@ Rectangle {
     color: "transparent"
     RowLayout {
         anchors.fill: parent
-        TextField {
+
+        Input {
             Layout.alignment: Qt.AlignTop | Qt.AlignHCenter
             Layout.topMargin: Theme.current.windowHeaderHeight
             Layout.leftMargin: 10
             Layout.preferredHeight: Theme.current.windowNavigationWidth
             Layout.preferredWidth: parent.width -50
             Layout.fillWidth: true
-            placeholderText: qsTr("Enter a link to download")
 
-            background: Rectangle{
-                implicitHeight: root.height
-                implicitWidth: root.width
-                radius: 2
-                anchors.fill: parent
-                color: enabled? Theme.current.colorInputBackground:Theme.current.colorInputBackground
-                border.color: color
-                border.width: Theme.current.widthInputBorder
-            }
+            placeholderText: qsTr("Enter a link to download")
         }
 
         SimpleButton {
