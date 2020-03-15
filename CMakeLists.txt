@@ -18,9 +18,6 @@ foreach(lib ${THIRD_PARTY})
     include_directories(third_party/${lib})
 endforeach()
 
-# cmake module
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
-
 include(CPack)
 
  set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
@@ -28,4 +25,6 @@ include(CPack)
  set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
 add_subdirectory(src)
+
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/settings.toml ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/settings.toml)
 

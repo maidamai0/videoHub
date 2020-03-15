@@ -21,15 +21,7 @@ add_custom_command(
     COMMENT "Copying qmldir to binary directory"
 )
 
-# move dll to bin directoy
-set(MOVE_MODEL_PLUGIN_COMMAND ${CMAKE_COMMAND} -E rename $<TARGET_FILE:${TARGET}> ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/$<TARGET_FILE_NAME:${TARGET}>)
-add_custom_command(
-    TARGET ${TARGET}
-    POST_BUILD
-    COMMAND ${MOVE_MODEL_PLUGIN_COMMAND}
-    COMMENT "move model plugin to binary directory"
-)
-
+# generate qmltypes
 if(CMAKE_BUILD_TYPE STREQUAL "Release")
     get_target_property(_qmake_executable Qt5::qmake IMPORTED_LOCATION)
     get_filename_component(_qt_bin_dir "${_qmake_executable}" DIRECTORY)
@@ -41,3 +33,12 @@ if(CMAKE_BUILD_TYPE STREQUAL "Release")
         COMMENT "generating qmltypes"
     )
 endif()
+
+# move dll to bin directoy
+set(MOVE_MODEL_PLUGIN_COMMAND ${CMAKE_COMMAND} -E rename $<TARGET_FILE:${TARGET}> ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/$<TARGET_FILE_NAME:${TARGET}>)
+add_custom_command(
+    TARGET ${TARGET}
+    POST_BUILD
+    COMMAND ${MOVE_MODEL_PLUGIN_COMMAND}
+    COMMENT "move model plugin to binary directory"
+)

@@ -1,0 +1,14 @@
+# general settings
+[general] 
+# log level
+# 0 for debug
+# 1 for warning
+# 2 for error
+log_level = 0
+
+# settings related to network
+[network]
+
+# proxy
+http_proxy = "socks5://127.0.0.1.:50022"
+https_proxy = "socks5://127.0.0.1.:50022"
