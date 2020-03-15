@@ -38,12 +38,13 @@ endif()
 # build and install the Qt runtime to the specified directory
 function(windeployqt target directory)
 
-	# execute windeployqt in a tmp directory after build
+    # execute windeployqt in a tmp directory after build
+    message(STATUS "WINDEPLOYQT_EXECUTABLE is ${WINDEPLOYQT_EXECUTABLE}")
     add_custom_command(TARGET ${target}
         POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E remove_directory "${CMAKE_CURRENT_BINARY_DIR}/windeployqt"
 		COMMAND set PATH="${_qt_bin_dir}"
-        COMMAND "${WINDEPLOYQT_EXECUTABLE}" --dir "${CMAKE_CURRENT_BINARY_DIR}/windeployqt"  --verbose 0 --no-compiler-runtime --no-translations --no-angle --release --no-opengl-sw "$<TARGET_FILE:${target}>"
+        COMMAND "${WINDEPLOYQT_EXECUTABLE}" --verbose 0 --dir "${CMAKE_CURRENT_BINARY_DIR}/windeployqt" --json --no-compiler-runtime --no-translations --no-angle --release --no-opengl-sw "$<TARGET_FILE:${target}>"
     )
 
 	# copy deployment directory during installation

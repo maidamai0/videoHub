@@ -1,0 +1,29 @@
+<?xml version="1.0" ?>
+<RCC>
+    <qresource prefix="/">
+        <file>MainWindow.qml</file>
+        <file>VideoHub.png</file>
+        <file>controls/IconLabel.qml</file>
+        <file>controls/IconValueInput.qml</file>
+        <file>controls/Input.qml</file>
+        <file>controls/KeyValueLabel.qml</file>
+        <file>controls/SimpleButton.qml</file>
+        <file>fonts/Font Awesome 5 Brands-Regular-400.otf</file>
+        <file>fonts/Font Awesome 5 Free-Regular-400.otf</file>
+        <file>fonts/Font Awesome 5 Free-Solid-900.otf</file>
+        <file>fonts/FontAwesome.qml</file>
+        <file>fonts/Icons.qml</file>
+        <file>fonts/qmldir</file>
+        <file>page/Config.qml</file>
+        <file>page/Content.qml</file>
+        <file>page/LocalPage.qml</file>
+        <file>page/Navigation.qml</file>
+        <file>page/NewItemPage.qml</file>
+        <file>page/WindowHeader.qml</file>
+        <file>theme/BaseTheme.qml</file>
+        <file>theme/DarkTheme.qml</file>
+        <file>theme/LightTheme.qml</file>
+        <file>theme/qmldir</file>
+        <file>theme/Theme.qml</file>
+    </qresource>
+</RCC>

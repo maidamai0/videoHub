@@ -6,7 +6,7 @@ import os
 def createResource():
     root = XmlTree.Element("RCC")
     content = XmlTree.SubElement(root, "qresource", {"prefix": "/"})
-    iterate_directory("view", content)
+    iterate_directory(".", content)
 
     f = open("resource.qrc", "w+")
     f.write(pretty_xml(root))
@@ -20,6 +20,7 @@ def iterate_directory(dir, content):
                 continue
             file_path = os.path.join(dirpath, filename)
             file_path = file_path.replace("\\", "/")
+            file_path = file_path[2:]
             XmlTree.SubElement(content, "file").text = file_path
 
 

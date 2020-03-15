@@ -14,7 +14,7 @@ Window {
     minimumHeight: 480
     title: qsTr("Video Hub")
     color: Theme.current.colorBackground
-    flags: Qt.FramelessWindowHint
+    // flags: Qt.FramelessWindowHint
 
     property bool isMaximized: false
 

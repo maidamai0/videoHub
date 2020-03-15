@@ -11,16 +11,14 @@ foreach(qt5lib ${QT5_COMPONENTS})
     link_libraries(Qt5::${qt5lib})
 endforeach()
 
-add_subdirectory(model)
+set(QML_IMPORT_PATH "${CMAKE_CURRENT_BINARY_DIR}" CACHE STRING "Qt Creator extra qml import paths")
+
+include_directories(${CMAKE_CURRENT_SOURCE_DIR})
+
+set(WINDOWS_EXPORT_ALL_SYMBOLS TRUE)
+
+add_subdirectory(Model)
 add_subdirectory(view)
 
-add_executable(${PROJECT_NAME} main.cpp resource.qrc)
-
-target_link_libraries(${PROJECT_NAME} model)
-
-install(TARGETS ${PROJECT_NAME})
-
-include(Windeployqt)
-
-windeployqt(${PROJECT_NAME} bin)
+add_subdirectory(app)
 

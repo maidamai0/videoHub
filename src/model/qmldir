@@ -1,3 +1,2 @@
 module model
 plugin model
-typeinfo plugins.qmltypes

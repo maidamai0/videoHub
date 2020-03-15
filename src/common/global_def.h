@@ -32,3 +32,15 @@
                                                                            \
  public:                                                                   \
   Q_SIGNAL void Rname##Changed();
+
+#ifdef _WIN32
+#ifdef VH_EXPORTDLL
+#define VH_EXPORT __declspec(dllexport)
+#else
+#define VH_EXPORT __declspec(dllimport)
+#endif
+#else
+#define VH_EXPORT
+#endif
+
+// #define VH_EXPORT

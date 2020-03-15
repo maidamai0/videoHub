@@ -13,12 +13,14 @@
 
 #include <QObject>
 
-#include "../common/global_def.h"
+#include "common/global_def.h"
 
-class ConfigModel : public QObject {
+class VH_EXPORT ConfigModel : public QObject {
   Q_OBJECT
   QPROP(QString, httpProxy, HttpProxy);
 
  public:
   ConfigModel();
+
+ private:
 };
