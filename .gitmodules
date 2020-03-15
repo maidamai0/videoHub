@@ -4,9 +4,6 @@
 [submodule "third_party/fmtlib"]
 	path = third_party/fmtlib
 	url = https://github.com/fmtlib/fmt
-[submodule "cmake/qmlplugin"]
-	path = cmake/qmlplugin
-	url = git@github.com:maidamai0/cmake-qmlplugin.git
 [submodule "third_party/toml11"]
 	path = third_party/toml11
 	url = https://github.com/ToruNiina/toml11
