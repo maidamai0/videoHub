@@ -9,7 +9,6 @@
 #include "common/log.h"
 #include "model/configuration.h"
 #include "model/new_item_page.h"
-#include "qqmlapplicationengine.h"
 
 auto main(int argc, char *argv[]) -> int {
   qInstallMessageHandler(logger);
@@ -29,6 +28,8 @@ auto main(int argc, char *argv[]) -> int {
       },
       Qt::QueuedConnection);
   engine.load(url);
+
+  Q_INIT_RESOURCE(resource);
 
   auto model = new NewItemModel();
   engine.rootContext()->setContextProperty("new_item_model", model);

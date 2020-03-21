@@ -2,8 +2,8 @@ file(GLOB SRC "*.cpp")
 
 set(TARGET_NAME "video_hub")
 
-add_executable(${TARGET_NAME} ${SRC} ../view/resource.qrc)
-target_link_libraries(${TARGET_NAME} model)
+add_executable(${TARGET_NAME} ${SRC})
+target_link_libraries(${TARGET_NAME} view model)
 
 install(TARGETS ${TARGET_NAME})
 
