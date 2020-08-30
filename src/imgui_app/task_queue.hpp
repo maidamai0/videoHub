@@ -33,13 +33,14 @@ class TaskQueue {
     std::string Pop() {
         using namespace std::chrono_literals;
         std::unique_lock<mutex_type> lock(mtx_);
-        while (tasks_.empty()) {
-            con_var_.wait(lock);
+        if (con_var_.wait_for(lock, 200ms, [this]() { return !tasks_.empty(); })) {
+            auto task = tasks_.front();
+            tasks_.pop();
+            return task;
         }
 
-        auto task = tasks_.front();
-        tasks_.pop();
-        return task;
+        // time out
+        return {};
     }
 
    private:

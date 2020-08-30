@@ -12,6 +12,7 @@
  */
 
 #include <atomic>
+#include <cassert>
 #include <iostream>
 #include <map>
 #include <memory>
@@ -36,7 +37,6 @@ class Downloader final {
     ~Downloader() {
         run_ = false;
         for (auto& worker : workers_) {
-            task_queue_.Push(std::string(empty_task));
             auto id = worker->get_id();
             worker->join();
             std::cout << "thread " << thread_names_[id] << std::endl << " exit";
@@ -48,7 +48,7 @@ class Downloader final {
         while (run_) {
             auto url = task_queue_.Pop();
             if (url.empty()) {
-                using namespace std::chrono_literals;
+                std::this_thread::yield();
             } else {
                 download(std::move(url));
             }
@@ -56,9 +56,7 @@ class Downloader final {
     }
 
     void download(std::string&& task) {
-        if (task == empty_task) {
-            return;
-        }
+        assert(!task.empty());
         std::stringstream cmd;
         cmd << "youtube-dl " << task.data();
         std::cout << thread_names_[std::this_thread::get_id()] << " " << cmd.str() << std::endl;
@@ -70,5 +68,4 @@ class Downloader final {
     std::vector<std::unique_ptr<std::thread>> workers_;
     std::atomic_bool run_{true};
     std::map<std::thread::id, std::string> thread_names_;
-    const std::string empty_task{" "};  // used for exit
 };
