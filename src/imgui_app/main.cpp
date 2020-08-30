@@ -205,7 +205,7 @@ int main(int, char**) {
 
             {
                 ImGui::Spacing();
-                if (ImGui::Button("New download")) {
+                if (ImGui::Button("New download", ImVec2(-FLT_MIN, 0.0F))) {
                     ImGui::OpenPopup("download");
                 };
                 // Always center this window when appearing
@@ -216,10 +216,12 @@ int main(int, char**) {
 
                 if (ImGui::BeginPopup("download", ImGuiWindowFlags_NoMove)) {
                     static std::array<char, 1024> url{};
-                    ImGui::PushItemWidth(ImGui::GetContentRegionAvailWidth() * 0.9F);
-                    ImGui::InputTextWithHint("Url", "download link", url.data(), url.size());
+                    ImGui::PushItemWidth(-FLT_MIN);
+                    if (ImGui::InputTextWithHint("Url", "download link", url.data(), url.size())) {
+                        ImGui::SetKeyboardFocusHere();
+                    }
 
-                    if (ImGui::Button("OK")) {
+                    if (ImGui::Button("OK", ImVec2(-FLT_MIN, 0.0F))) {
                         if (!url.empty()) {
                             queue.Push(std::string(url.data()));
                             url = {};
