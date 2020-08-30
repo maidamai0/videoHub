@@ -1,7 +1,11 @@
 #include <array>
 #include <chrono>
 #include <cstdio>
+#include <future>
+#include <iostream>
+#include <memory>
 #include <sstream>
+#include <string>
 #include <thread>
 
 // clang-format off
@@ -10,9 +14,13 @@
 
 #include "GLFW/glfw3.h"
 #include "imgui.h"
+#include "imgui_app/task_queue.hpp"
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
 #include "stb_image.h"
+
+#include "task_queue.hpp"
+#include "downloader.hpp"
 
 auto window_width = 850;
 auto window_height = 580;
@@ -57,10 +65,11 @@ static void HelpMarker(const char* desc) {
 int main(int, char**) {
     // Setup window
     glfwSetErrorCallback(glfw_error_callback);
-    if (!glfwInit())
+    if (!glfwInit()) {
+        std::cerr << "initialize GLFW failed" << std::endl;
         return 1;
-
-        // Decide GL+GLSL versions
+    }
+    // Decide GL+GLSL versions
 #if __APPLE__
     // GL 3.2 + GLSL 150
     const char* glsl_version = "#version 150";
@@ -139,8 +148,8 @@ int main(int, char**) {
     // io.Fonts->AddFontDefault();
     io.Fonts->AddFontFromFileTTF("fonts/Roboto-Medium.ttf", 16.0F);
     io.Fonts->AddFontFromFileTTF("fonts/Cousine-Regular.ttf", 15.0F);
-    io.Fonts->AddFontFromFileTTF("fonts/DroidSans.ttf", 16.0f);
-    io.Fonts->AddFontFromFileTTF("fonts/ProggyTiny.ttf", 16.0f);
+    io.Fonts->AddFontFromFileTTF("fonts/DroidSans.ttf", 16.0F);
+    io.Fonts->AddFontFromFileTTF("fonts/ProggyTiny.ttf", 16.0F);
     // ImFont* font = io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\Arial.ttf", 18.0f, NULL,
     // io.Fonts->GetGlyphRangesJapanese()); IM_ASSERT(font != NULL);
 
@@ -155,6 +164,10 @@ int main(int, char**) {
     flags |= ImGuiWindowFlags_NoScrollbar;
     flags |= ImGuiWindowFlags_NoCollapse;
     flags |= ImGuiWindowFlags_NoBringToFrontOnFocus;
+
+    // Create task
+    TaskQueue queue;
+    Downloader downlader(queue);
 
     // Main loop
     while (!glfwWindowShouldClose(window)) {
@@ -202,14 +215,15 @@ int main(int, char**) {
                 ImGui::SetNextWindowSize({window_width * 0.8F, window_height * 0.8F});
 
                 if (ImGui::BeginPopup("download", ImGuiWindowFlags_NoMove)) {
-                    std::array<char, 1024> url{};
+                    static std::array<char, 1024> url{};
                     ImGui::PushItemWidth(ImGui::GetContentRegionAvailWidth() * 0.9F);
                     ImGui::InputTextWithHint("Url", "download link", url.data(), url.size());
 
                     if (ImGui::Button("OK")) {
-                        // std::stringstream cmd("youtube-dl ");
-                        // cmd << url.data();
-                        // system(cmd.str().c_str());
+                        if (!url.empty()) {
+                            queue.Push(std::string(url.data()));
+                            url = {};
+                        }
                         ImGui::CloseCurrentPopup();
                     }
 
