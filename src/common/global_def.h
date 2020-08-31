@@ -11,36 +11,12 @@
  *
  */
 
-#include "qobjectdefs.h"
-
-#define QPROP(type, Rname, Wname)                                          \
-  Q_PROPERTY(type Rname READ Rname WRITE Set##Wname NOTIFY Rname##Changed) \
-                                                                           \
- private:                                                                  \
-  type Rname##_;                                                           \
-                                                                           \
- public:                                                                   \
-  type Rname() const { return Rname##_; }                                  \
-  void Set##Wname(const type& v) {                                         \
-    if (Rname##_ == v) {                                                   \
-      return;                                                              \
-    } else {                                                               \
-      Rname##_ = v;                                                        \
-      emit Rname##Changed();                                               \
-    };                                                                     \
-  }                                                                        \
-                                                                           \
- public:                                                                   \
-  Q_SIGNAL void Rname##Changed();
-
 #ifdef _WIN32
-#ifdef VH_EXPORTDLL
-#define VH_EXPORT __declspec(dllexport)
+#ifdef VH_EXPORT
+#define VH_API __declspec(dllexport)
 #else
-#define VH_EXPORT __declspec(dllimport)
+#define VH_API __declspec(dllimport)
 #endif
 #else
-#define VH_EXPORT
+#define VH_API
 #endif
-
-// #define VH_EXPORT
