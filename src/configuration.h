@@ -13,9 +13,7 @@
 
 #include <string>
 
-#include "common/global_def.h"
-
-class VH_API Config {
+class Config {
    public:
     Config();
     void Print();
