@@ -275,3 +275,11 @@ int main(int, char**) {
 
     return 0;
 }
+
+#ifdef _WIN32
+#include <Windows.h>
+#include <WinBase.h>
+int APIENTRY WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
+    return main(__argc, __argv);
+}
+#endif
