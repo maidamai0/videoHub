@@ -1,6 +1,5 @@
 #include "configuration.h"
 
-#include <QDebug>
 #include <fstream>
 #include <iostream>
 #include <string>
@@ -12,31 +11,17 @@ namespace {
 const std::string config_file_name{"settings.toml"};
 }  // namespace
 
-ConfigModel::ConfigModel() {
-  auto settings = toml::parse(config_file_name);
+Config::Config() {
+    auto settings = toml::parse(config_file_name);
 
-  auto general = settings["general"];
-  SetLogLevel(settings["general"]["log_level"].as_integer());
+    auto general = settings["general"];
+    SetLogLevel(settings["general"]["log_level"].as_integer());
 
-  auto network = settings["network"];
-  SetHttpProxy(QString::fromStdString(network["http_proxy"].as_string()));
-  SetHttpsProxy(QString::fromStdString(network["https_proxy"].as_string()));
+    auto network = settings["network"];
+    http_proxy_ = network["http_proxy"].as_string();
+    http_proxy_ = network["https_proxy"].as_string();
 
-  Print();
-
-  connect(this, &ConfigModel::httpProxyChanged, [this]() {
-    std::cout << __FILE__ << ":" << __LINE__ << ":" << httpProxy_.toStdString()
-              << std::endl;
-  });
+    Print();
 }
 
-void ConfigModel::Print() {
-  qDebug() << "settings:";
-
-  qDebug() << "general:";
-  qDebug() << "log level: " << logLevel_;
-
-  qDebug() << "network:";
-  qDebug() << "http proxy: " << httpProxy_;
-  qDebug() << "https proxy: " << httpsProxy_;
-}
+void Config::Print() {}

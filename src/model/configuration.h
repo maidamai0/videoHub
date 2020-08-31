@@ -11,19 +11,16 @@
  *
  */
 
-#include <QObject>
+#include <string>
 
 #include "common/global_def.h"
 
-class VH_EXPORT ConfigModel : public QObject {
-  Q_OBJECT
-  QPROP(QString, httpProxy, HttpProxy);
-  QPROP(QString, httpsProxy, HttpsProxy);
-  QPROP(int, logLevel, LogLevel);
+class VH_API Config {
+   public:
+    Config();
+    void Print();
 
- public:
-  ConfigModel();
-  void Print();
-
- private:
+   private:
+    std::string http_proxy_;
+    std::string https_proxy_;
 };
