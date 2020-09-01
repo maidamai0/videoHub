@@ -8,6 +8,7 @@
 #include "imgui.h"
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
+#include "roboto_medium.hpp"
 #include "stb_image.h"
 #include "task_queue.hpp"
 
@@ -129,12 +130,15 @@ MainWindow::MainWindow() {
     // will call.
     // - Read 'docs/FONTS.md' for more instructions and details.
     // io.Fonts->AddFontDefault();
-    io.Fonts->AddFontFromFileTTF("fonts/Roboto-Medium.ttf", 16.0F);
-    io.Fonts->AddFontFromFileTTF("fonts/Cousine-Regular.ttf", 15.0F);
-    io.Fonts->AddFontFromFileTTF("fonts/DroidSans.ttf", 16.0F);
-    io.Fonts->AddFontFromFileTTF("fonts/ProggyTiny.ttf", 16.0F);
+    // io.Fonts->AddFontFromFileTTF("fonts/Roboto-Medium.ttf", 16.0F);
+    // io.Fonts->AddFontFromFileTTF("fonts/Cousine-Regular.ttf", 15.0F);
+    // io.Fonts->AddFontFromFileTTF("fonts/DroidSans.ttf", 16.0F);
+    // io.Fonts->AddFontFromFileTTF("fonts/ProggyTiny.ttf", 16.0F);
     // ImFont* font = io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\Arial.ttf", 18.0f, NULL,
     // io.Fonts->GetGlyphRangesJapanese()); IM_ASSERT(font != NULL);
+    // io.Fonts->AddFontFromMemoryCompressedBase85TTF(roboto_medium_compressed_data_base85, 16.0F);
+    io.Fonts->AddFontFromMemoryCompressedTTF(
+        roboto_medium_compressed_data, roboto_medium_compressed_size, 16.0F);
 }
 
 void MainWindow::Run() {
@@ -224,15 +228,17 @@ void MainWindow::Run() {
 
         // content window
         {
-            ImGui::SetNextWindowPos({kNavigatorWidth - 1, 0.0});
-            ImGui::SetNextWindowSize({static_cast<float>(window_width_ - kNavigatorWidth + 1),
+            ImGui::SetNextWindowPos({kNavigatorWidth, 0.0});
+            ImGui::SetNextWindowSize({static_cast<float>(window_width_ - kNavigatorWidth),
                                       static_cast<float>(window_height_)});
             ImGui::Begin("Content", nullptr, flags);
 
             ImGui::End();
         }
 
+#ifndef NDEBUG
         ImGui::ShowDemoWindow();
+#endif
 
         // Rendering
         ImGui::Render();

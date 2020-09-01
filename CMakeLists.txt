@@ -38,11 +38,6 @@ include(CPack)
  set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
  set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
-# copy fonts
-file(GLOB font_files ${CMAKE_CURRENT_SOURCE_DIR}/third_party/imgui/misc/fonts/*.ttf)
-file(MAKE_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/fonts)
-file(COPY ${font_files} DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/fonts)
-
 # copy icon
 file(COPY video_hub.png DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/)
 
