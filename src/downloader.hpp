@@ -31,6 +31,7 @@ class Downloader final {
         for (std::remove_const<decltype(size)>::type i = 0; i < size; ++i) {
             workers_.push_back(std::make_unique<std::thread>(&Downloader::worker, this));
             thread_names_[workers_.back()->get_id()] = "worker #" + std::to_string(i);
+            std::cout << "worker #" + std::to_string(i) << " started" << std::endl;
         }
     }
 
@@ -39,7 +40,7 @@ class Downloader final {
         for (auto& worker : workers_) {
             auto id = worker->get_id();
             worker->join();
-            std::cout << "thread " << thread_names_[id] << std::endl << " exit";
+            std::cout << thread_names_[id] << " exit" << std::endl;
         }
     }
 
