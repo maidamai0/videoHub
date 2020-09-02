@@ -6,6 +6,9 @@
 # 2 for error
 log_level = 0
 
+# download path
+download_path = "./"
+
 # settings related to network
 [network]
 
