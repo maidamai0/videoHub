@@ -38,9 +38,6 @@ include(CPack)
  set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
  set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
-# copy icon
-file(COPY video_hub.png DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/)
-
 add_subdirectory(src)
 
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/settings.toml ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/settings.toml)
