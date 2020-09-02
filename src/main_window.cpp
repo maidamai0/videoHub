@@ -12,6 +12,8 @@
 #include "stb_image.h"
 #include "task_queue.hpp"
 
+#include "resource_list.h"
+
 int MainWindow::window_width_ = 850;
 int MainWindow::window_height_ = 580;
 constexpr auto kNavigatorWidth = 200;
@@ -83,7 +85,9 @@ MainWindow::MainWindow() {
     //  set window icon
     {
         GLFWimage icon;
-        icon.pixels = stbi_load("video_hub.png", &icon.width, &icon.height, nullptr, 4);
+        resman::ResourceHandle win_icon{window_icon};
+        // icon.pixels = stbi_load("video_hub.png", &icon.width, &icon.height, nullptr, 4);
+        icon.pixels = stbi_load_from_memory(win_icon.data(), win_icon.size(), &icon.width, &icon.height, nullptr, 4);
         glfwSetWindowIcon(window_, 1, &icon);
         stbi_image_free(icon.pixels);
     }

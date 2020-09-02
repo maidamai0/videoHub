@@ -7,3 +7,4 @@
 
 file(GLOB src *.cpp)
 add_executable(${PROJECT_NAME} WIN32 ${src} resource.rc)
+target_link_libraries(${PROJECT_NAME} ${CMAKE_CURRENT_SOURCE_DIR}/resource_bundle.lib)
