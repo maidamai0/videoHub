@@ -1,12 +1,3 @@
-[submodule "third_party/doctest"]
-	path = third_party/doctest
-	url = https://github.com/onqtam/doctest
-[submodule "third_party/fmtlib"]
-	path = third_party/fmtlib
-	url = https://github.com/fmtlib/fmt
-[submodule "third_party/toml11"]
-	path = third_party/toml11
-	url = https://github.com/ToruNiina/toml11
 [submodule "third_party/imgui"]
 	path = third_party/imgui
 	url = https://github.com/ocornut/imgui.git
