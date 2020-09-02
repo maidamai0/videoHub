@@ -7,17 +7,18 @@
 
 ## Dependencices
 
-* spdlog
-* glfw
-* glad
-* doctest
-* fmtlib
-* imgui
+* [nlohmann_json](https://github.com/nlohmann/json)
+* [spdlog](https://github.com/gabime/spdlog)
+* [glfw](https://github.com/glfw/glfw)
+* [glad2](https://github.com/Dav1dde/glad/tree/glad2)
+* [doctest](https://github.com/onqtam/doctest)
+* [fmtlib](https://github.com/fmtlib/fmt)
+* [imgui](https://github.com/ocornut/imgui)
 
 :bulb: Install all dependencies with [vcpkg](https://github.com/microsoft/vcpkg)
 
 ```cmd
-vcpkg install spdlog glfw3 doctest fmt
+vcpkg install nlohmann_json spdlog glfw3 doctest fmt
 ```
 
-:bulb: `glad` and `imgui` are already in [third_party](third_party/CMakeLists.txt)
+:bulb: `glad` and `imgui` are already in [third_party](third_party/)

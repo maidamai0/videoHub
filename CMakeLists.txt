@@ -13,11 +13,11 @@ add_compile_definitions(
     STB_IMAGE_IMPLEMENTATION
 )
 
-find_package(jsoncpp CONFIG REQUIRED)
+find_package(nlohmann_json CONFIG REQUIRED)
 find_package(fmt CONFIG REQUIRED)
 find_package(doctest CONFIG REQUIRED)
 find_package(glfw3 CONFIG REQUIRED)
-link_libraries(glfw doctest::doctest fmt::fmt)
+link_libraries(glfw doctest::doctest fmt::fmt nlohmann_json nlohmann_json::nlohmann_json)
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/third_party/imgui)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/third_party/imgui/examples)
