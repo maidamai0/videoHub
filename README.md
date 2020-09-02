@@ -13,3 +13,11 @@
 * doctest
 * fmtlib
 * imgui
+
+:bulb: Install all dependencies with [vcpkg](https://github.com/microsoft/vcpkg)
+
+```cmd
+vcpkg install spdlog glfw3 doctest fmt
+```
+
+:bulb: `glad` and `imgui` are already in [third_party](third_party/CMakeLists.txt)
