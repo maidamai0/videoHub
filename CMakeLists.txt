@@ -8,23 +8,16 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_COMPILE_COMMANDS on)
 
 # third party
-set(THIRD_PARTY
-    doctest
-    fmtlib/include
-    tomlplusplus/include
-)
-include_directories(third_party)
-foreach(lib ${THIRD_PARTY})
-    include_directories(third_party/${lib})
-endforeach()
-
 add_compile_definitions(
     IMGUI_IMPL_OPENGL_LOADER_GLAD2
     STB_IMAGE_IMPLEMENTATION
 )
 
+find_package(jsoncpp CONFIG REQUIRED)
+find_package(fmt CONFIG REQUIRED)
+find_package(doctest CONFIG REQUIRED)
 find_package(glfw3 CONFIG REQUIRED)
-link_libraries(glfw)
+link_libraries(glfw doctest::doctest fmt::fmt)
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/third_party/imgui)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/third_party/imgui/examples)
