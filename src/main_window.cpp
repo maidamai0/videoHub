@@ -8,11 +8,10 @@
 #include "imgui.h"
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
+#include "resource_list.h"
 #include "roboto_medium.hpp"
 #include "stb_image.h"
 #include "task_queue.hpp"
-
-#include "resource_list.h"
 
 int MainWindow::window_width_ = 850;
 int MainWindow::window_height_ = 580;
@@ -87,7 +86,8 @@ MainWindow::MainWindow() {
         GLFWimage icon;
         resman::ResourceHandle win_icon{window_icon};
         // icon.pixels = stbi_load("video_hub.png", &icon.width, &icon.height, nullptr, 4);
-        icon.pixels = stbi_load_from_memory(win_icon.data(), win_icon.size(), &icon.width, &icon.height, nullptr, 4);
+        icon.pixels = stbi_load_from_memory(
+            win_icon.data(), win_icon.size(), &icon.width, &icon.height, nullptr, 4);
         glfwSetWindowIcon(window_, 1, &icon);
         stbi_image_free(icon.pixels);
     }
@@ -190,12 +190,6 @@ void MainWindow::Run() {
             ImGui::SetNextWindowPos({0.0, 0.0});
             ImGui::SetNextWindowSize({kNavigatorWidth, static_cast<float>(window_height_)});
             ImGui::Begin("Navigator", nullptr, flags);
-            if (ImGui::ShowStyleSelector("Theme##Selector")) {
-                custom_style();
-            }
-
-            ImGui::Spacing();
-            ImGui::Separator();
 
             {
                 ImGui::Spacing();
@@ -225,6 +219,13 @@ void MainWindow::Run() {
 
                     ImGui::EndPopup();
                 }
+            }
+
+            ImGui::SetCursorPos({15.0F, static_cast<float>(window_height_ - 50)});
+            ImGui::Separator();
+            ImGui::Spacing();
+            if (ImGui::ShowStyleSelector("Theme##Selector")) {
+                custom_style();
             }
 
             ImGui::End();
