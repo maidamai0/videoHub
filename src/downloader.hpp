@@ -63,10 +63,16 @@ class Downloader final {
         std::vector<std::string> cmd{"youtube-dl", task};
         auto cout = [](const char* bytes, size_t n) {
             std::cout << std::string(bytes, n);
+            if (bytes[n - 1] != '\n') {
+                std::cout << "\n";
+            }
             std::flush(std::cout);
         };
         auto cerr = [](const char* bytes, size_t n) {
             std::cout << std::string(bytes, n);
+            if (bytes[n - 1] != '\n') {
+                std::cout << "\n";
+            }
             std::flush(std::cout);
         };
 
