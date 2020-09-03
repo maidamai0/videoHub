@@ -7,3 +7,4 @@ file(GLOB imgui_src  ${CMAKE_CURRENT_SOURCE_DIR}/imgui/*.cpp
 
 add_library(imgui ${imgui_src})
 target_link_libraries(imgui glad)
+add_subdirectory(tiny_process)

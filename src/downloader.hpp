@@ -16,6 +16,7 @@
 #include <iostream>
 #include <map>
 #include <memory>
+#include <ostream>
 #include <sstream>
 #include <string>
 #include <thread>
@@ -23,6 +24,7 @@
 #include <vector>
 
 #include "task_queue.hpp"
+#include "tiny_process/process.hpp"
 
 class Downloader final {
    public:
@@ -58,10 +60,18 @@ class Downloader final {
 
     void download(std::string&& task) {
         assert(!task.empty());
-        std::stringstream cmd;
-        cmd << "youtube-dl " << task.data();
-        std::cout << thread_names_[std::this_thread::get_id()] << " " << cmd.str() << std::endl;
-        system(cmd.str().c_str());
+        std::vector<std::string> cmd{"youtube-dl", task};
+        auto cout = [](const char* bytes, size_t n) {
+            std::cout << std::string(bytes, n);
+            std::flush(std::cout);
+        };
+        auto cerr = [](const char* bytes, size_t n) {
+            std::cout << std::string(bytes, n);
+            std::flush(std::cout);
+        };
+
+        TinyProcessLib::Process ps{cmd, "", cout, cerr};
+        const auto exit_status = ps.get_exit_status();
     }
 
    private:
