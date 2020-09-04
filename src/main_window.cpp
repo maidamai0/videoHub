@@ -238,6 +238,8 @@ void MainWindow::Run() {
                                       static_cast<float>(window_height_)});
             ImGui::Begin("Content", nullptr, flags);
 
+            ImGui::ProgressBar(0.0F);
+
             ImGui::End();
         }
 
