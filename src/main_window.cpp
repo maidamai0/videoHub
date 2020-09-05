@@ -165,11 +165,6 @@ void MainWindow::Run() {
     TaskQueue queue;
     Downloader downlader(queue);
 
-    queue.Push("1fsfsfs");
-    queue.Push("2fsfsfs");
-    queue.Push("3fsfsfs");
-    queue.Push("4fsfsfs");
-
     // Main loop
     while (!glfwWindowShouldClose(window_)) {
         // Poll and handle events (inputs, window resize, etc.)
