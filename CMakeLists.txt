@@ -11,6 +11,8 @@ set(CMAKE_COMPILE_COMMANDS on)
 add_compile_definitions(
     IMGUI_IMPL_OPENGL_LOADER_GLAD2
     STB_IMAGE_IMPLEMENTATION
+    # UNICODE
+    # _UNICODE
 )
 
 find_package(nlohmann_json CONFIG REQUIRED)
@@ -32,6 +34,7 @@ link_libraries(imgui)
 
 link_libraries(tiny-process-library)
 include(CPack)
+enable_testing()
 
  set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
  set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)

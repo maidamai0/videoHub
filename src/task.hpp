@@ -1,0 +1,72 @@
+#pragma once
+
+#include <memory>
+#include <mutex>
+#include <string>
+#include <type_traits>
+
+#include "tiny_process/process.hpp"
+
+class Task final {
+   public:
+    using task_ptr = std::shared_ptr<Task>;
+    using string_type = TinyProcessLib::Process::string_type;
+
+    explicit Task(string_type&& url) : url_(url) {}
+    Task() = default;
+    Task(const Task& rhs) {
+        std::lock_guard<std::mutex> lock(rhs.progress_mutex_);
+        url_ = rhs.url_;
+        full_path_ = rhs.full_path_;
+        progress_ = rhs.progress_;
+    }
+
+    Task(Task&& rhs) noexcept {
+        std::lock_guard<std::mutex> lock(rhs.progress_mutex_);
+        url_ = std::move(rhs.url_);
+        full_path_ = std::move(rhs.full_path_);
+        progress_ = rhs.progress_;
+    }
+
+    bool operator==(const Task& rhs) const {
+        return url_ == rhs.url_;
+    }
+
+    auto IsEmpty() {
+        return url_.empty();
+    }
+
+    auto GetUrl() {
+        return url_;
+    }
+
+    void SetFullPath(string_type&& path) {
+        full_path_ = path;
+    }
+
+    [[nodiscard]] auto GetFullPath() const {
+        return full_path_;
+    }
+
+    [[nodiscard]] auto GetProgress() const {
+        std::lock_guard<std::mutex> lock(progress_mutex_);
+        return progress_;
+    }
+
+    void Update(const float v, string_type& total_size, string_type& speed, string_type& eta) {
+        std::lock_guard<std::mutex> lock(progress_mutex_);
+        progress_ = v;
+        total_size_ = total_size;
+        speed_ = speed;
+        eta_ = eta;
+    }
+
+   private:
+    string_type url_;
+    string_type full_path_;
+    string_type total_size_;
+    string_type speed_;
+    string_type eta_;
+    float progress_ = 0.0F;
+    mutable std::mutex progress_mutex_;
+};

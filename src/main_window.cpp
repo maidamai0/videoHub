@@ -238,7 +238,11 @@ void MainWindow::Run() {
                                       static_cast<float>(window_height_)});
             ImGui::Begin("Content", nullptr, flags);
 
-            ImGui::ProgressBar(0.0F);
+            for (const auto& task : TaskStore::GetInstance().GetDownloadingList()) {
+                auto pro = task->GetProgress();
+                ImGui::ProgressBar(pro);
+                ImGui::Text("%s", task->GetFullPath().c_str());
+            }
 
             ImGui::End();
         }

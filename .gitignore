@@ -5,3 +5,5 @@ build
 .vscode
 compile_commands.json
 *.ini
+*.mp4
+*.part
