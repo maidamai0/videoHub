@@ -240,8 +240,13 @@ void MainWindow::Run() {
 
             for (const auto& task : TaskStore::GetInstance().GetDownloadingList()) {
                 auto pro = task->GetProgress();
+                auto color =
+                    interpolate({0.8F, 0.F, 0.0F}, {1.0F, 0.88F, 0.2F}, {0.0F, 0.4F, 0.0F}, pro);
+                ImGui::PushStyleColor(ImGuiCol_PlotHistogram,
+                                      ImVec4{color[0], color[1], color[2], 1.0F});
                 ImGui::ProgressBar(pro);
                 ImGui::Text("%s", task->GetFullPath().c_str());
+                ImGui::PopStyleColor();
             }
 
             ImGui::End();

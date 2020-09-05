@@ -1,5 +1,6 @@
 #pragma once
 
+#include <array>
 #include <string>
 #include <type_traits>
 #include <vector>
@@ -48,3 +49,19 @@ inline std::vector<std::string> split_string(const std::string& str, std::string
 //         CHECK(res[7] == std::string(R"(10:54)"));
 //     }
 // }
+
+inline auto interpolate(std::array<float, 4> start, std::array<float, 4> middle,
+                        std::array<float, 4> end, float v) {
+    std::array<float, 4> ret;
+    if (v < 0.5) {
+        for (size_t i = 0; i < 4; ++i) {
+            ret[i] = start[i] + v * (middle[i] - start[i]) / 0.5;
+        }
+    } else {
+        for (size_t i = 0; i < 4; ++i) {
+            ret[i] = middle[i] + (v - 0.5) * (end[i] - middle[i]) / 0.5;
+        }
+    }
+
+    return ret;
+}
