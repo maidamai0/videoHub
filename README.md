@@ -1,5 +1,9 @@
 # Video Hub
 
+## :books: How to use
+
+Download from [release](https://github.com/maidamai0/videoHub/releases) and make sure [youtube-dl](https://github.com/ytdl-org/youtube-dl) is in you `PATH`
+
 ## :rocket: Download engine
 
 * [youtube-dl](https://github.com/ytdl-org/youtube-dl)
