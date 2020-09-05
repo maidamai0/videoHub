@@ -53,12 +53,23 @@ class Task final {
         return progress_;
     }
 
-    void Update(const float v, string_type& total_size, string_type& speed, string_type& eta) {
+    auto Update(string_type&& v, const string_type&& total_size, string_type&& speed,
+                string_type&& eta) {
         std::lock_guard<std::mutex> lock(progress_mutex_);
         progress_ = v;
         total_size_ = total_size;
         speed_ = speed;
         eta_ = eta;
+    }
+
+    auto GetSpeed() const {
+        std::lock_guard<std::mutex> lock(progress_mutex_);
+        return speed_ + " | " + eta_;
+    }
+
+    auto GetProgressAndSize() const {
+        std::lock_guard<std::mutex> lock(progress_mutex_);
+        return progress_ + "/" + total_size_;
     }
 
    private:
@@ -67,6 +78,6 @@ class Task final {
     string_type total_size_;
     string_type speed_;
     string_type eta_;
-    float progress_ = 0.0F;
+    string_type progress_ = {};
     mutable std::mutex progress_mutex_;
 };

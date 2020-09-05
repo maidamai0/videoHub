@@ -100,27 +100,26 @@ class Downloader final {
 
         std::vector<string_type> cmd{string_type{"youtube-dl"}, task->GetUrl()};
         TinyProcessLib::Process ps{cmd, "", cout, cerr};
-        auto status = ps.get_exit_status();
+        ps.get_exit_status();
         TaskStore::GetInstance().RemoveDownloadingTask(task);
     }
 
     static void update_download_progress(const string_type& str, const task_ptr& task) {
-        static constexpr auto index_progress = 1;
-        static constexpr auto index_total_size = index_progress + 2;
-        static constexpr auto index_speed = index_total_size + 2;
-        static constexpr auto index_eta = index_speed + 2;
+        static constexpr auto kIndexProgress = 1;
+        static constexpr auto kIndexTotalSize = kIndexProgress + 2;
+        static constexpr auto kIndexSpeed = kIndexTotalSize + 2;
+        static constexpr auto kIndexEta = kIndexSpeed + 2;
         auto res = split_string(str, " ");
 
         // complete message
-        if (res.size() < index_eta + 1) {
+        if (res.size() < kIndexEta + 1) {
             return;
         }
 
-        task->Update(
-            std::stof(res[index_progress].substr(0, res[index_progress].size() - 1)) / 100.0F,
-            res[index_total_size],
-            res[index_speed],
-            res[index_eta]);
+        task->Update(std::move(res[kIndexProgress]),
+                     std::move(res[kIndexTotalSize]),
+                     std::move(res[kIndexSpeed]),
+                     std::move(res[kIndexEta]));
     }
 
     static void update_file_name(const string_type& str, const task_ptr& task) {
@@ -131,7 +130,6 @@ class Downloader final {
         }
     }
 
-   private:
     TaskQueue& task_queue_;
     std::vector<std::unique_ptr<std::thread>> workers_;
     std::atomic_bool run_{true};

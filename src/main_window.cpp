@@ -3,6 +3,8 @@
 #include <array>
 #include <exception>
 #include <iostream>
+#include <string>
+#include <string_view>
 
 #include "downloader.hpp"
 #include "imgui.h"
@@ -163,6 +165,11 @@ void MainWindow::Run() {
     TaskQueue queue;
     Downloader downlader(queue);
 
+    queue.Push("1fsfsfs");
+    queue.Push("2fsfsfs");
+    queue.Push("3fsfsfs");
+    queue.Push("4fsfsfs");
+
     // Main loop
     while (!glfwWindowShouldClose(window_)) {
         // Poll and handle events (inputs, window resize, etc.)
@@ -239,14 +246,43 @@ void MainWindow::Run() {
             ImGui::Begin("Content", nullptr, flags);
 
             for (const auto& task : TaskStore::GetInstance().GetDownloadingList()) {
-                auto pro = task->GetProgress();
-                auto color =
-                    interpolate({0.8F, 0.F, 0.0F}, {1.0F, 0.88F, 0.2F}, {0.0F, 0.4F, 0.0F}, pro);
-                ImGui::PushStyleColor(ImGuiCol_PlotHistogram,
-                                      ImVec4{color[0], color[1], color[2], 1.0F});
-                ImGui::ProgressBar(pro);
-                ImGui::Text("%s", task->GetFullPath().c_str());
-                ImGui::PopStyleColor();
+                ImGuiWindowFlags window_flags = ImGuiWindowFlags_None;
+                window_flags |= ImGuiWindowFlags_NoScrollbar;
+                ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding, 5.0F);
+                ImGui::BeginChild(task->GetUrl().c_str(), ImVec2(0, 80), true, window_flags);
+
+                // progress bar
+                if (unlikely(task->GetFullPath().empty())) {
+                    ImGui::ProgressBar(0.0F, ImVec2(-1.0F, -1.0F), task->GetUrl().c_str());
+                } else {
+                    auto progress = task->GetProgress();
+                    auto progresss_value =
+                        progress.empty()
+                            ? 0.0F
+                            : std::stof(progress.substr(0, progress.size() - 1)) / 100.0F;
+                    auto color = interpolate({0.8F, 0.F, 0.0F},
+                                             {1.0F, 0.88F, 0.2F},
+                                             {0.0F, 0.4F, 0.0F},
+                                             progresss_value);
+
+                    ImGui::PushStyleColor(ImGuiCol_PlotHistogram,
+                                          ImVec4{color[0], color[1], color[2], 1.0F});
+                    ImGui::ProgressBar(
+                        progresss_value, ImVec2(-1.0F, 0.0F), task->GetProgressAndSize().c_str());
+                    ImGui::PopStyleColor();
+
+                    // file name
+                    ImGui::Text("   * %s", task->GetFullPath().c_str());
+
+                    // realtime description
+                    ImGui::Text("   * %s", task->GetSpeed().c_str());
+                }
+
+                ImGui::EndChild();
+                ImGui::PopStyleVar();
+
+                ImGui::Spacing();
+                ImGui::Spacing();
             }
 
             ImGui::End();
