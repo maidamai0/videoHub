@@ -1,49 +1,11 @@
 #include "main_window.h"
 
-#include <array>
-#include <exception>
-#include <iostream>
-#include <string>
-#include <string_view>
-
-#include "downloader.hpp"
-#include "imgui.h"
-#include "imgui_impl_glfw.h"
-#include "imgui_impl_opengl3.h"
+#include "renderer.h"
 #include "resource_list.h"
-#include "roboto_medium.hpp"
 #include "stb_image.h"
-#include "task_queue.hpp"
 
 int MainWindow::window_width_ = 850;
 int MainWindow::window_height_ = 580;
-constexpr auto kNavigatorWidth = 200;
-
-void custom_style() {
-    auto& style = ImGui::GetStyle();
-
-    style.WindowPadding = ImVec2{10, 10};
-
-    style.WindowRounding = 0.0F;
-    style.FrameRounding = 5.0F;
-    style.PopupRounding = 5.0F;
-    style.ScrollbarRounding = 5.0F;
-    style.GrabRounding = 5.0F;
-
-    style.WindowBorderSize = 1.0F;
-    style.FrameBorderSize = 1.0F;
-}
-
-void HelpMarker(const char* desc) {
-    ImGui::TextDisabled("(?)");
-    if (ImGui::IsItemHovered()) {
-        ImGui::BeginTooltip();
-        ImGui::PushTextWrapPos(ImGui::GetFontSize() * 35.0F);
-        ImGui::TextUnformatted(desc);
-        ImGui::PopTextWrapPos();
-        ImGui::EndTooltip();
-    }
-}
 
 void glfw_error_callback(int error, const char* description) {
     fprintf(stderr, "Glfw Error %d: %s\n", error, description);
@@ -109,72 +71,12 @@ MainWindow::MainWindow() {
     if (gladLoadGL(glfwGetProcAddress) == 0) {
         throw std::exception{"glad2 load OpenGL failed"};
     }
-
-    // Setup Dear ImGui context
-    IMGUI_CHECKVERSION();
-    ImGui::CreateContext();
-    ImGuiIO& io = ImGui::GetIO();
-    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;  // Enable Keyboard Controls
-    // io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
-
-    // Setup Dear ImGui style
-    ImGui::StyleColorsLight();
-
-    // Setup Platform/Renderer bindings
-    ImGui_ImplGlfw_InitForOpenGL(window_, true);
-    ImGui_ImplOpenGL3_Init(glsl_version_.c_str());
-
-    // Load Fonts
-    // - If no fonts are loaded, dear imgui will use the default font. You can also load multiple
-    // fonts and use ImGui::PushFont()/PopFont() to select them.
-    // - AddFontFromFileTTF() will return the ImFont* so you can store it if you need to select the
-    // font among multiple.
-    // - If the file cannot be loaded, the function will return NULL. Please handle those errors in
-    // your application (e.g. use an assertion, or display an error and quit).
-    // - The fonts will be rasterized at a given size (w/ oversampling) and stored into a texture
-    // when calling ImFontAtlas::Build()/GetTexDataAsXXXX(), which ImGui_ImplXXXX_NewFrame below
-    // will call.
-    // - Read 'docs/FONTS.md' for more instructions and details.
-    // io.Fonts->AddFontDefault();
-    // io.Fonts->AddFontFromFileTTF("fonts/Roboto-Medium.ttf", 16.0F);
-    // io.Fonts->AddFontFromFileTTF("fonts/Cousine-Regular.ttf", 15.0F);
-    // io.Fonts->AddFontFromFileTTF("fonts/DroidSans.ttf", 16.0F);
-    // io.Fonts->AddFontFromFileTTF("fonts/ProggyTiny.ttf", 16.0F);
-    // ImFont* font = io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\Arial.ttf", 18.0f, NULL,
-    // io.Fonts->GetGlyphRangesJapanese()); IM_ASSERT(font != NULL);
-    // io.Fonts->AddFontFromMemoryCompressedBase85TTF(roboto_medium_compressed_data_base85, 16.0F);
-    io.Fonts->AddFontFromMemoryCompressedTTF(
-        roboto_medium_compressed_data, roboto_medium_compressed_size, 16.0F);
 }
 
 void MainWindow::Run() {
-    custom_style();
-    // Our state
-    ImVec4 clear_color = ImVec4(1.0F, 1.0F, 1.0F, 1.00F);
-
-    // window flags
-    ImGuiWindowFlags flags = 0;
-    flags |= ImGuiWindowFlags_NoTitleBar;
-    flags |= ImGuiWindowFlags_NoResize;
-    flags |= ImGuiWindowFlags_NoMove;
-    flags |= ImGuiWindowFlags_NoScrollbar;
-    flags |= ImGuiWindowFlags_NoCollapse;
-    flags |= ImGuiWindowFlags_NoBringToFrontOnFocus;
-
-    // Create task
-    TaskQueue queue;
-    Downloader downlader(queue);
-
+    Renderer renderer;
     // Main loop
     while (!glfwWindowShouldClose(window_)) {
-        // Poll and handle events (inputs, window resize, etc.)
-        // You can read the io.WantCaptureMouse, io.WantCaptureKeyboard flags to tell if dear imgui
-        // wants to use your inputs.
-        // - When io.WantCaptureMouse is true, do not dispatch mouse input data to your main
-        // application.
-        // - When io.WantCaptureKeyboard is true, do not dispatch keyboard input data to your main
-        // application. Generally you may always pass all inputs to dear imgui, and hide them from
-        // your application based on those two flags.
         glfwPollEvents();
 
         if (glfwGetWindowAttrib(window_, GLFW_ICONIFIED)) {
@@ -182,132 +84,23 @@ void MainWindow::Run() {
             continue;
         }
 
-        // Start the Dear ImGui frame
-        ImGui_ImplOpenGL3_NewFrame();
-        ImGui_ImplGlfw_NewFrame();
-        ImGui::NewFrame();
-
-        // navigator window
-        {
-            ImGui::SetNextWindowPos({0.0, 0.0});
-            ImGui::SetNextWindowSize({kNavigatorWidth, static_cast<float>(window_height_)});
-            ImGui::Begin("Navigator", nullptr, flags);
-
-            {
-                ImGui::Spacing();
-                if (ImGui::Button("New download", ImVec2(-FLT_MIN, 0.0F))) {
-                    ImGui::OpenPopup("download");
-                };
-                // Always center this window when appearing
-                ImVec2 center(ImGui::GetIO().DisplaySize.x * 0.5F,
-                              ImGui::GetIO().DisplaySize.y * 0.5F);
-                ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5F, 0.5F));
-                ImGui::SetNextWindowSize({window_width_ * 0.8F, window_height_ * 0.8F});
-
-                if (ImGui::BeginPopup("download", ImGuiWindowFlags_NoMove)) {
-                    static std::array<char, 1024> url{};
-                    ImGui::PushItemWidth(-FLT_MIN);
-                    if (ImGui::InputTextWithHint("Url", "download link", url.data(), url.size())) {
-                        ImGui::SetKeyboardFocusHere();
-                    }
-
-                    if (ImGui::Button("OK", ImVec2(-FLT_MIN, 0.0F))) {
-                        if (!url.empty()) {
-                            queue.Push(std::string(url.data()));
-                            url = {};
-                        }
-                        ImGui::CloseCurrentPopup();
-                    }
-
-                    ImGui::EndPopup();
-                }
-            }
-
-            ImGui::SetCursorPos({15.0F, static_cast<float>(window_height_ - 50)});
-            ImGui::Separator();
-            ImGui::Spacing();
-            if (ImGui::ShowStyleSelector("Theme##Selector")) {
-                custom_style();
-            }
-
-            ImGui::End();
-        }
-
-        // content window
-        {
-            ImGui::SetNextWindowPos({kNavigatorWidth, 0.0});
-            ImGui::SetNextWindowSize({static_cast<float>(window_width_ - kNavigatorWidth),
-                                      static_cast<float>(window_height_)});
-            ImGui::Begin("Content", nullptr, flags);
-
-            for (const auto& task : TaskStore::GetInstance().GetDownloadingList()) {
-                ImGuiWindowFlags window_flags = ImGuiWindowFlags_None;
-                window_flags |= ImGuiWindowFlags_NoScrollbar;
-                ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding, 5.0F);
-                ImGui::BeginChild(task->GetUrl().c_str(), ImVec2(0, 80), true, window_flags);
-
-                // progress bar
-                if (unlikely(task->GetFullPath().empty())) {
-                    ImGui::ProgressBar(0.0F, ImVec2(-1.0F, -1.0F), task->GetUrl().c_str());
-                } else {
-                    auto progress = task->GetProgress();
-                    auto progresss_value =
-                        progress.empty()
-                            ? 0.0F
-                            : std::stof(progress.substr(0, progress.size() - 1)) / 100.0F;
-                    auto color = interpolate({0.8F, 0.F, 0.0F},
-                                             {1.0F, 0.88F, 0.2F},
-                                             {0.0F, 0.4F, 0.0F},
-                                             progresss_value);
-
-                    ImGui::PushStyleColor(ImGuiCol_PlotHistogram,
-                                          ImVec4{color[0], color[1], color[2], 1.0F});
-                    ImGui::ProgressBar(
-                        progresss_value, ImVec2(-1.0F, 0.0F), task->GetProgressAndSize().c_str());
-                    ImGui::PopStyleColor();
-
-                    // file name
-                    ImGui::Text("   * %s", task->GetFullPath().c_str());
-
-                    // realtime description
-                    ImGui::Text("   * %s", task->GetSpeed().c_str());
-                }
-
-                ImGui::EndChild();
-                ImGui::PopStyleVar();
-
-                ImGui::Spacing();
-                ImGui::Spacing();
-            }
-
-            ImGui::End();
-        }
-
-#ifndef NDEBUG
-        ImGui::ShowDemoWindow();
-#endif
-
         // Rendering
-        ImGui::Render();
+        renderer.Render();
+
+        glfwSwapBuffers(window_);
         int display_w = 0;
         int display_h = 0;
         glfwGetFramebufferSize(window_, &display_w, &display_h);
         glViewport(0, 0, display_w, display_h);
-        glClearColor(clear_color.x, clear_color.y, clear_color.z, clear_color.w);
+        glClearColor(1.0F, 1.0F, 1.0F, 1.00F);
         glClear(GL_COLOR_BUFFER_BIT);
-        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-
-        glfwSwapBuffers(window_);
 
         if (!glfwGetWindowAttrib(window_, GLFW_FOCUSED)) {
             std::this_thread::sleep_for(std::chrono::milliseconds(200));
         }
     }
 
-    // Cleanup
-    ImGui_ImplOpenGL3_Shutdown();
-    ImGui_ImplGlfw_Shutdown();
-    ImGui::DestroyContext();
+    renderer.Destroy();
 
     glfwDestroyWindow(window_);
     glfwTerminate();

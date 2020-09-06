@@ -24,6 +24,7 @@
 #include <thread>
 #include <tuple>
 #include <type_traits>
+#include <utility>
 #include <vector>
 
 #include "task.hpp"
@@ -37,7 +38,7 @@ class Downloader final {
     using string_type = Task::string_type;
     using task_ptr = Task::task_ptr;
 
-    explicit Downloader(TaskQueue& queue) : task_queue_(queue) {
+    explicit Downloader(std::shared_ptr<TaskQueue> queue) : task_queue_(std::move(queue)) {
         const auto size = std::thread::hardware_concurrency();
         for (std::remove_const<decltype(size)>::type i = 0; i < size; ++i) {
             workers_.push_back(std::make_unique<std::thread>(&Downloader::worker, this));
@@ -53,12 +54,13 @@ class Downloader final {
             worker->join();
             std::cout << thread_names_[id] << " exit" << std::endl;
         }
+        std::cout << __FUNCTION__ << std::endl;
     }
 
    private:
     void worker() {
         while (run_) {
-            auto task = task_queue_.Pop();
+            auto task = task_queue_->Pop();
             if (!task) {
                 std::this_thread::yield();
             } else {
@@ -67,8 +69,9 @@ class Downloader final {
         }
     }
 
-    static void download(task_ptr task) {
+    void download(task_ptr task) {
         assert(task);
+        std::cout << thread_names_[std::this_thread::get_id()] << " start to work" << std::endl;
 
         auto cout = [&task](const char* bytes, size_t n) {
             auto log = string_type(bytes, n);
@@ -130,7 +133,7 @@ class Downloader final {
         }
     }
 
-    TaskQueue& task_queue_;
+    std::shared_ptr<TaskQueue> task_queue_;
     std::vector<std::unique_ptr<std::thread>> workers_;
     std::atomic_bool run_{true};
     std::map<std::thread::id, string_type> thread_names_;

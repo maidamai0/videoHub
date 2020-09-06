@@ -12,6 +12,7 @@
  */
 
 #include <chrono>
+#include <iostream>
 #include <memory>
 #include <mutex>
 #include <queue>
@@ -28,6 +29,10 @@
 class TaskQueue {
    public:
     using value_type = Task::task_ptr;
+
+    ~TaskQueue() {
+        std::cout << __FUNCTION__ << std::endl;
+    }
 
     void Push(std::string&& url) {
         std::unique_lock<mutex_type> lock(mtx_);

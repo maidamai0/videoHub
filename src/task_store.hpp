@@ -13,6 +13,10 @@ class TaskStore final {
         return instance;
     }
 
+    ~TaskStore() {
+        std::cout << __FUNCTION__ << std::endl;
+    }
+
     void AddDownloadingTask(const task_ptr& task) {
         std::lock_guard<std::mutex> lock(downloading_mutex_);
         downloading_list_.push_back(task);

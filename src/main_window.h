@@ -1,8 +1,8 @@
 #pragma once
-
-// clang-format off
 #include <string>
 #include <tuple>
+
+// clang-format off
 #include "glad/gl.h" // must include before glfw
 // clang-format on
 #include "GLFW/glfw3.h"
@@ -31,11 +31,11 @@ class MainWindow final {
         window_height_ = h;
     }
 
-    auto GetWindow() const {
+    [[nodiscard]] auto GetWindow() const {
         return window_;
     }
 
-    auto GetGLSLVersion() const {
+    [[nodiscard]] auto GetGLSLVersion() const {
         return glsl_version_;
     }
 
@@ -50,7 +50,6 @@ class MainWindow final {
    private:
     MainWindow();
 
-   private:
     GLFWwindow* window_ = nullptr;
     std::string glsl_version_;
     static int window_width_;
