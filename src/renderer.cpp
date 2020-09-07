@@ -75,11 +75,23 @@ void Renderer::Render() {
     ImGui_ImplGlfw_NewFrame();
     ImGui::NewFrame();
 
-    // navigator window
-    draw_navigation_window();
+    ImGui::SetNextWindowPos({0.0, 0.0});
+    ImGui::SetNextWindowSize(
+        {static_cast<float>(MainWindow::Width()), static_cast<float>(MainWindow::Height())});
+    ImGui::Begin("background", nullptr, kFlags);
+    ImGui::Columns(2, "MainColumn");
 
-    // content window
+    ImGui::BeginChild("Navigator");
+    draw_navigation_window();
+    ImGui::EndChild();
+    ImGui::SameLine();
+
+    ImGui::NextColumn();
+    ImGui::BeginChild("Content");
     draw_content_window();
+    ImGui::EndChild();
+
+    ImGui::End();
 
 #ifndef NDEBUG
     ImGui::ShowDemoWindow();
@@ -90,10 +102,6 @@ void Renderer::Render() {
 }
 
 void Renderer::draw_navigation_window() {
-    ImGui::SetNextWindowPos({0.0, 0.0});
-    ImGui::SetNextWindowSize({kNavigatorWidth, static_cast<float>(MainWindow::Height())});
-    ImGui::Begin("Navigator", nullptr, kFlags);
-
     {
         ImGui::Spacing();
         if (ImGui::Button("New download", ImVec2(-FLT_MIN, 0.0F))) {
@@ -129,15 +137,9 @@ void Renderer::draw_navigation_window() {
     if (ImGui::ShowStyleSelector("Theme##Selector")) {
         custom_style();
     }
-
-    ImGui::End();
 }
-void Renderer::draw_content_window() {
-    ImGui::SetNextWindowPos({kNavigatorWidth, 0.0});
-    ImGui::SetNextWindowSize({static_cast<float>(MainWindow::Width() - kNavigatorWidth),
-                              static_cast<float>(MainWindow::Height())});
-    ImGui::Begin("Content", nullptr, kFlags);
 
+void Renderer::draw_content_window() {
     for (const auto& task : TaskStore::GetInstance().GetDownloadingList()) {
         ImGuiWindowFlags window_flags = ImGuiWindowFlags_None;
         window_flags |= ImGuiWindowFlags_NoScrollbar;
@@ -174,8 +176,6 @@ void Renderer::draw_content_window() {
         ImGui::Spacing();
         ImGui::Spacing();
     }
-
-    ImGui::End();
 }
 
 void Renderer::Destroy() {
