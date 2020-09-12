@@ -21,6 +21,10 @@ constexpr auto kFlags = ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize 
 
 constexpr auto kNavigatorWidth = 200;
 
+constexpr std::array<float, 4> kColorRed = {0.8F, 0.F, 0.0F, 1.0F};
+constexpr std::array<float, 4> kColorYellow = {1.0F, 0.88F, 0.2F, 1.0F};
+constexpr std::array<float, 4> kColorGreen = {0.0F, 0.4F, 0.0F, 1.0F};
+
 void custom_style() {
     auto& style = ImGui::GetStyle();
 
@@ -96,7 +100,17 @@ void Renderer::Render() {
     ImGui::NextColumn();
     ImGui::PushItemWidth(-1);
     ImGui::BeginChild("Content");
-    draw_content_window();
+    switch (content_type_) {
+        case ContentType::kDownloading: {
+            draw_downloading_window();
+            break;
+        }
+        case ContentType::kDownloaded: {
+            draw_downloaded_window();
+            break;
+        }
+    }
+    draw_downloading_window();
     ImGui::EndChild();
     ImGui::PopItemWidth();
 
@@ -111,35 +125,30 @@ void Renderer::Render() {
 }
 
 void Renderer::draw_navigation_window() {
-    {
-        ImGui::Spacing();
-        if (ImGui::Button("New download", ImVec2(-FLT_MIN, 0.0F))) {
-            ImGui::OpenPopup("download");
-        };
-        // Always center this window when appearing
-        ImVec2 center(ImGui::GetIO().DisplaySize.x * 0.5F, ImGui::GetIO().DisplaySize.y * 0.5F);
-        ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5F, 0.5F));
-        ImGui::SetNextWindowSize({MainWindow::Width() * 0.8F, MainWindow::Height() * 0.8F});
+    // new download button
+    ImGui::Spacing();
+    if (ImGui::Button("New download", ImVec2(-FLT_MIN, 0.0F))) {
+        ImGui::OpenPopup("download");
+    };
+    // Always center this window when appearing
+    ImVec2 center(ImGui::GetIO().DisplaySize.x * 0.5F, ImGui::GetIO().DisplaySize.y * 0.5F);
+    ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5F, 0.5F));
+    ImGui::SetNextWindowSize({MainWindow::Width() * 0.8F, MainWindow::Height() * 0.8F});
+    draw_new_download_window();
 
-        if (ImGui::BeginPopup("download", ImGuiWindowFlags_NoMove)) {
-            static std::array<char, 1024> url{};
-            ImGui::PushItemWidth(-FLT_MIN);
-            if (ImGui::InputTextWithHint("Url", "download link", url.data(), url.size())) {
-                ImGui::SetKeyboardFocusHere();
-            }
-
-            if (ImGui::Button("OK", ImVec2(-FLT_MIN, 0.0F))) {
-                if (!url.empty()) {
-                    queue_->Push(std::string(url.data()));
-                    url = {};
-                }
-                ImGui::CloseCurrentPopup();
-            }
-
-            ImGui::EndPopup();
-        }
+    // downloading button
+    ImGui::Spacing();
+    if (ImGui::Button("Downloading", ImVec2(-FLT_MIN, 0.0F))) {
+        content_type_ = ContentType::kDownloading;
     }
 
+    // downlaaded button
+    ImGui::Spacing();
+    if (ImGui::Button("Downloaded", ImVec2(-FLT_MIN, 0.0F))) {
+        content_type_ = ContentType::kDownloaded;
+    }
+
+    // theme
     ImGui::SetCursorPos({15.0F, static_cast<float>(MainWindow::Height() - 50)});
     ImGui::Separator();
     ImGui::Spacing();
@@ -148,7 +157,27 @@ void Renderer::draw_navigation_window() {
     }
 }
 
-void Renderer::draw_content_window() {
+void Renderer::draw_new_download_window() {
+    if (ImGui::BeginPopup("download", ImGuiWindowFlags_NoMove)) {
+        static std::array<char, 1024> url{};
+        ImGui::PushItemWidth(-FLT_MIN);
+        if (ImGui::InputTextWithHint("Url", "download link", url.data(), url.size())) {
+            ImGui::SetKeyboardFocusHere();
+        }
+
+        if (ImGui::Button("OK", ImVec2(-FLT_MIN, 0.0F))) {
+            if (!url.empty()) {
+                queue_->Push(std::string(url.data()));
+                url = {};
+            }
+            ImGui::CloseCurrentPopup();
+        }
+
+        ImGui::EndPopup();
+    }
+}
+
+void Renderer::draw_downloading_window() {
     for (const auto& task : TaskStore::GetInstance().GetDownloadingList()) {
         ImGuiWindowFlags window_flags = ImGuiWindowFlags_None;
         window_flags |= ImGuiWindowFlags_NoScrollbar;
@@ -163,8 +192,7 @@ void Renderer::draw_content_window() {
             auto progresss_value =
                 progress.empty() ? 0.0F
                                  : std::stof(progress.substr(0, progress.size() - 1)) / 100.0F;
-            auto color = interpolate(
-                {0.8F, 0.F, 0.0F}, {1.0F, 0.88F, 0.2F}, {0.0F, 0.4F, 0.0F}, progresss_value);
+            auto color = interpolate(kColorRed, kColorYellow, kColorGreen, progresss_value);
 
             ImGui::PushStyleColor(ImGuiCol_PlotHistogram,
                                   ImVec4{color[0], color[1], color[2], 1.0F});
@@ -178,6 +206,34 @@ void Renderer::draw_content_window() {
             // realtime description
             ImGui::Text("   * %s", task->GetSpeed().c_str());
         }
+
+        ImGui::EndChild();
+        ImGui::PopStyleVar();
+
+        ImGui::Spacing();
+        ImGui::Spacing();
+    }
+}
+
+void Renderer::draw_downloaded_window() {
+    for (const auto& task : TaskStore::GetInstance().GetDownloadedList()) {
+        ImGuiWindowFlags window_flags = ImGuiWindowFlags_None;
+        window_flags |= ImGuiWindowFlags_NoScrollbar;
+        ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding, 5.0F);
+        ImGui::BeginChild(task->GetUrl().c_str(), ImVec2(0, 80), true, window_flags);
+
+        // progress bar
+
+        ImGui::PushStyleColor(ImGuiCol_PlotHistogram,
+                              ImVec4{kColorGreen[0], kColorGreen[1], kColorGreen[2], 1.0F});
+        ImGui::ProgressBar(1.0F, ImVec2(-1.0F, 0.0F), task->GetProgressAndSize().c_str());
+        ImGui::PopStyleColor();
+
+        // file name
+        ImGui::Text("   * %s", task->GetFullPath().c_str());
+
+        // realtime description
+        ImGui::Text("   * Completed in%s", task->GetSpeed().c_str());
 
         ImGui::EndChild();
         ImGui::PopStyleVar();

@@ -19,8 +19,13 @@ class Renderer final {
 
    private:
     void draw_navigation_window();
-    static void draw_content_window();
+    void draw_new_download_window();
+    static void draw_downloading_window();
+    static void draw_downloaded_window();
+
+    enum class ContentType { kDownloading, kDownloaded };
 
     std::shared_ptr<TaskQueue> queue_;
     std::unique_ptr<Downloader> downloader_;
+    ContentType content_type_{ContentType::kDownloading};
 };

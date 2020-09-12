@@ -39,11 +39,17 @@ class TaskStore final {
         downloaded_list_.push_back(task);
     }
 
+    [[nodiscard]] auto GetDownloadedList() const {
+        std::lock_guard<std::mutex> lock(downloaded_mutex_);
+        auto list = downloaded_list_;
+        return list;
+    }
+
    private:
     TaskStore() = default;
 
     std::list<task_ptr> downloading_list_;
     mutable std::mutex downloading_mutex_;
     std::list<task_ptr> downloaded_list_;
-    std::mutex downloaded_mutex_;
+    mutable std::mutex downloaded_mutex_;
 };

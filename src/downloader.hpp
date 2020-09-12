@@ -105,6 +105,7 @@ class Downloader final {
         TinyProcessLib::Process ps{cmd, "", cout, cerr};
         ps.get_exit_status();
         TaskStore::GetInstance().RemoveDownloadingTask(task);
+        TaskStore::GetInstance().AddDownloadedTask(task);
     }
 
     static void update_download_progress(const string_type& str, const task_ptr& task) {

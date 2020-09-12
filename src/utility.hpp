@@ -50,8 +50,8 @@ inline std::vector<std::string> split_string(const std::string& str, std::string
 //     }
 // }
 
-inline auto interpolate(std::array<float, 4> start, std::array<float, 4> middle,
-                        std::array<float, 4> end, float v) {
+inline auto interpolate(const std::array<float, 4>& start, const std::array<float, 4>& middle,
+                        const std::array<float, 4>& end, const float v) {
     std::array<float, 4> ret;
     if (v < 0.5) {
         for (size_t i = 0; i < 4; ++i) {
