@@ -38,7 +38,7 @@ class Downloader final {
     using string_type = Task::string_type;
     using task_ptr = Task::task_ptr;
 
-    explicit Downloader(std::shared_ptr<TaskQueue> queue) : task_queue_(std::move(queue)) {
+    explicit Downloader() {
         const auto size = std::thread::hardware_concurrency();
         for (std::remove_const<decltype(size)>::type i = 0; i < size; ++i) {
             workers_.push_back(std::make_unique<std::thread>(&Downloader::worker, this));
@@ -60,7 +60,7 @@ class Downloader final {
    private:
     void worker() {
         while (run_) {
-            auto task = task_queue_->Pop();
+            auto task = TaskStore::GetInstance().GetPendingList().Pop();
             if (!task) {
                 std::this_thread::yield();
             } else {
@@ -134,7 +134,6 @@ class Downloader final {
         }
     }
 
-    std::shared_ptr<TaskQueue> task_queue_;
     std::vector<std::unique_ptr<std::thread>> workers_;
     std::atomic_bool run_{true};
     std::map<std::thread::id, string_type> thread_names_;

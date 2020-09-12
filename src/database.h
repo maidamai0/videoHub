@@ -1,11 +1,11 @@
 #pragma once
 
 /**
- * @file configuration.h
+ * @file database.h
  * @author tonghao.yuan (yuantonghao@gmail.com)
- * @brief   configuration model of video_hub, proxy of confugration file and ui
+ * @brief
  * @version 0.1
- * @date 2020-03-07
+ * @date 2020-09-12
  *
  * @copyright Copyright (c) 2020
  *
@@ -13,12 +13,13 @@
 
 #include <string>
 
-class Config {
+class Database {
    public:
-    Config();
-    void Print();
+    static void Save();
+    static void Load();
 
    private:
+    Database() = default;
     std::string http_proxy_;
     std::string https_proxy_;
 };

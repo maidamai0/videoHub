@@ -2,6 +2,7 @@
 
 #include <list>
 #include <mutex>
+#include <type_traits>
 
 #include "task_queue.hpp"
 
@@ -45,11 +46,22 @@ class TaskStore final {
         return list;
     }
 
+    void AddPendingList(std::string&& url) {
+        pending_list_.Push(std::move(url));
+    }
+
+    TaskQueue& GetPendingList() {
+        return pending_list_;
+    }
+
    private:
     TaskStore() = default;
+    void save_tasks() const {}
 
     std::list<task_ptr> downloading_list_;
     mutable std::mutex downloading_mutex_;
     std::list<task_ptr> downloaded_list_;
     mutable std::mutex downloaded_mutex_;
+
+    TaskQueue pending_list_;  // thread safe queue.
 };

@@ -40,6 +40,10 @@ class Task final {
         return url_;
     }
 
+    void SetURL(string_type&& url) {
+        url_ = url;
+    }
+
     void SetFullPath(string_type&& path) {
         full_path_ = path;
     }

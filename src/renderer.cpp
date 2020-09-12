@@ -4,6 +4,7 @@
 #include <memory>
 #include <queue>
 
+#include "database.h"
 #include "imgui.h"
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
@@ -51,8 +52,7 @@ void HelpMarker(const char* desc) {
     }
 }
 
-Renderer::Renderer()
-    : queue_{std::make_shared<TaskQueue>()}, downloader_{std::make_unique<Downloader>(queue_)} {
+Renderer::Renderer() : downloader_{std::make_unique<Downloader>()} {
     // Setup Dear ImGui context
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
@@ -71,6 +71,8 @@ Renderer::Renderer()
         roboto_medium_compressed_data, roboto_medium_compressed_size, 16.0F);
 
     custom_style();
+
+    Database::Load();
 }
 
 void Renderer::Render() {
@@ -110,7 +112,6 @@ void Renderer::Render() {
             break;
         }
     }
-    draw_downloading_window();
     ImGui::EndChild();
     ImGui::PopItemWidth();
 
@@ -167,7 +168,7 @@ void Renderer::draw_new_download_window() {
 
         if (ImGui::Button("OK", ImVec2(-FLT_MIN, 0.0F))) {
             if (!url.empty()) {
-                queue_->Push(std::string(url.data()));
+                TaskStore::GetInstance().GetPendingList().Push(std::string(url.data()));
                 url = {};
             }
             ImGui::CloseCurrentPopup();
@@ -180,9 +181,9 @@ void Renderer::draw_new_download_window() {
 void Renderer::draw_downloading_window() {
     for (const auto& task : TaskStore::GetInstance().GetDownloadingList()) {
         ImGuiWindowFlags window_flags = ImGuiWindowFlags_None;
-        window_flags |= ImGuiWindowFlags_NoScrollbar;
+        window_flags |= ImGuiWindowFlags_NoDecoration;
         ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding, 5.0F);
-        ImGui::BeginChild(task->GetUrl().c_str(), ImVec2(0, 80), true, window_flags);
+        ImGui::BeginChild(task->GetUrl().c_str(), ImVec2(-1.0F, 80.0F), true, window_flags);
 
         // progress bar
         if (unlikely(task->GetFullPath().empty())) {
@@ -244,6 +245,7 @@ void Renderer::draw_downloaded_window() {
 }
 
 void Renderer::Destroy() {
+    Database::Save();
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext();

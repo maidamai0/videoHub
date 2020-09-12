@@ -4,7 +4,6 @@
 #include <string>
 
 #include "downloader.hpp"
-#include "task_queue.hpp"
 
 class Renderer final {
    public:
@@ -25,7 +24,6 @@ class Renderer final {
 
     enum class ContentType { kDownloading, kDownloaded };
 
-    std::shared_ptr<TaskQueue> queue_;
     std::unique_ptr<Downloader> downloader_;
     ContentType content_type_{ContentType::kDownloading};
 };
