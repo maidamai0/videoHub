@@ -16,9 +16,13 @@
 #include "task_store.hpp"
 
 // window flags
-constexpr auto kFlags = ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize |
-                        ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoScrollbar |
-                        ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoBringToFrontOnFocus;
+constexpr auto kMainWindowFlags = ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize |
+                                  ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoScrollbar |
+                                  ImGuiWindowFlags_NoCollapse |
+                                  ImGuiWindowFlags_NoBringToFrontOnFocus;
+
+constexpr auto kTaskWindowFlags =
+    ImGuiWindowFlags_None | ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoScrollWithMouse;
 
 constexpr auto kNavigatorWidth = 200;
 
@@ -84,7 +88,7 @@ void Renderer::Render() {
     ImGui::SetNextWindowPos({0.0, 0.0});
     ImGui::SetNextWindowSize(
         {static_cast<float>(MainWindow::Width()), static_cast<float>(MainWindow::Height())});
-    ImGui::Begin("background", nullptr, kFlags);
+    ImGui::Begin("background", nullptr, kMainWindowFlags);
     ImGui::Columns(2, "MainColumn");
 
     // There is a bug on the column width, see details at
@@ -180,10 +184,8 @@ void Renderer::draw_new_download_window() {
 
 void Renderer::draw_downloading_window() {
     for (const auto& task : TaskStore::GetInstance().GetDownloadingList()) {
-        ImGuiWindowFlags window_flags = ImGuiWindowFlags_None;
-        window_flags |= ImGuiWindowFlags_NoDecoration;
         ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding, 5.0F);
-        ImGui::BeginChild(task->GetUrl().c_str(), ImVec2(-1.0F, 80.0F), true, window_flags);
+        ImGui::BeginChild(task->GetUrl().c_str(), ImVec2(-1.0F, 80.0F), true, kTaskWindowFlags);
 
         // progress bar
         if (unlikely(task->GetFullPath().empty())) {
@@ -218,10 +220,8 @@ void Renderer::draw_downloading_window() {
 
 void Renderer::draw_downloaded_window() {
     for (const auto& task : TaskStore::GetInstance().GetDownloadedList()) {
-        ImGuiWindowFlags window_flags = ImGuiWindowFlags_None;
-        window_flags |= ImGuiWindowFlags_NoScrollbar;
         ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding, 5.0F);
-        ImGui::BeginChild(task->GetUrl().c_str(), ImVec2(0, 80), true, window_flags);
+        ImGui::BeginChild(task->GetUrl().c_str(), ImVec2(0, 80), true, kTaskWindowFlags);
 
         // progress bar
 

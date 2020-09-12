@@ -1,6 +1,7 @@
 #include "database.h"
 
 #include <fstream>
+#include <iomanip>
 #include <iostream>
 #include <memory>
 #include <nlohmann/json.hpp>
@@ -36,13 +37,14 @@ void Database::Save() {
     }
 
     // save downloading tasks
+    database[kDownloadingTaskKey] = nlohmann::json::array();
     for (const auto& task : TaskStore::GetInstance().GetDownloadedList()) {
         save_task(kDownloadedTaskKey, task);
     }
 
     // flush to file
     std::ofstream file(kDataBaseFileName);
-    file << database;
+    file << std::setw(4) << database;
 }
 
 void Database::Load() {
