@@ -81,15 +81,24 @@ void Renderer::Render() {
     ImGui::Begin("background", nullptr, kFlags);
     ImGui::Columns(2, "MainColumn");
 
+    // There is a bug on the column width, see details at
+    // https://github.com/ocornut/imgui/issues/1655
+    static bool init = true;
+    if (init) {
+        ImGui::SetColumnWidth(-1, kNavigatorWidth);
+        init = false;
+    }
     ImGui::BeginChild("Navigator");
     draw_navigation_window();
     ImGui::EndChild();
     ImGui::SameLine();
 
     ImGui::NextColumn();
+    ImGui::PushItemWidth(-1);
     ImGui::BeginChild("Content");
     draw_content_window();
     ImGui::EndChild();
+    ImGui::PopItemWidth();
 
     ImGui::End();
 
