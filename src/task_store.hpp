@@ -1,5 +1,6 @@
 #pragma once
 
+#include <filesystem>
 #include <list>
 #include <mutex>
 #include <type_traits>
@@ -38,6 +39,17 @@ class TaskStore final {
     void AddDownloadedTask(const task_ptr& task) {
         std::lock_guard<std::mutex> lock(downloaded_mutex_);
         downloaded_list_.push_back(task);
+    }
+
+    void RemoveDownloadedTask(const task_ptr& task) {
+        std::lock_guard<std::mutex> lock(downloaded_mutex_);
+        downloaded_list_.remove_if([&task](const task_ptr& v) {
+            if (v->GetUrl() == task->GetUrl()) {
+                std::filesystem::remove(task->GetFullPath());
+                return true;
+            };
+            return false;
+        });
     }
 
     [[nodiscard]] auto GetDownloadedList() const {

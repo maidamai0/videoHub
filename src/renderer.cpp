@@ -236,6 +236,13 @@ void Renderer::draw_downloaded_window() {
         // realtime description
         ImGui::Text("   * Completed in%s", task->GetSpeed().c_str());
 
+        if (ImGui::BeginPopupContextWindow()) {
+            if (ImGui::Button("Delete")) {
+                TaskStore::GetInstance().RemoveDownloadedTask(task);
+            }
+            ImGui::EndPopup();
+        }
+
         ImGui::EndChild();
         ImGui::PopStyleVar();
 
