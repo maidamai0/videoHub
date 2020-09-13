@@ -7,6 +7,7 @@
 #include <type_traits>
 
 #include "tiny_process/process.hpp"
+#include "utility.hpp"
 
 class Task final {
    public:
@@ -83,7 +84,7 @@ class Task final {
     }
 
     auto GetElapsedTime() const {
-        const auto duration = end_ - start_;
+        return duration_to_stirng(end_ - start_);
     }
 
    private:

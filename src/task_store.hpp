@@ -1,6 +1,8 @@
 #pragma once
 
+#include <exception>
 #include <filesystem>
+#include <iostream>
 #include <list>
 #include <mutex>
 #include <type_traits>
@@ -45,7 +47,12 @@ class TaskStore final {
         std::lock_guard<std::mutex> lock(downloaded_mutex_);
         downloaded_list_.remove_if([&task](const task_ptr& v) {
             if (v->GetUrl() == task->GetUrl()) {
-                std::filesystem::remove(task->GetFullPath());
+                try {
+                    std::filesystem::remove(task->GetFullPath());
+                } catch (std::filesystem::filesystem_error& e) {
+                    std::cout << "remove file failed:" << e.what() << std::endl;
+                }
+
                 return true;
             };
             return false;

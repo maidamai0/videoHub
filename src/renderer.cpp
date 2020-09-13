@@ -1,6 +1,7 @@
 #include "renderer.h"
 
 #include <array>
+#include <filesystem>
 #include <memory>
 #include <queue>
 #include <string>
@@ -225,7 +226,7 @@ void Renderer::draw_downloaded_window() {
         ImGui::Text("   * %s", task->GetFullPath().c_str());
 
         // realtime description
-        ImGui::Text("   * Completed in%s", task->GetSpeed().c_str());
+        ImGui::Text("   * Completed in %s", task->GetElapsedTime().c_str());
 
         if (ImGui::BeginPopupContextWindow()) {
             if (ImGui::Button("Delete")) {
@@ -234,10 +235,12 @@ void Renderer::draw_downloaded_window() {
             if (ImGui::Button("Open")) {
                 auto cmd = std::string("start ") + task->GetFullPath();
                 system(cmd.c_str());
+                ImGui::CloseCurrentPopup();
             }
             if (ImGui::Button("Open in folder")) {
-                auto cmd = std::string("start ") + task->GetFullPath();
+                auto cmd = std::string("start ") + std::filesystem::current_path().string();
                 system(cmd.c_str());
+                ImGui::CloseCurrentPopup();
             }
             ImGui::EndPopup();
         }
