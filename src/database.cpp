@@ -1,5 +1,6 @@
 #include "database.h"
 
+#include <exception>
 #include <fstream>
 #include <iomanip>
 #include <iostream>
@@ -17,11 +18,13 @@ constexpr auto kDownloadingTaskKey = "downloading_tasks";
 constexpr auto kDownloadedTaskKey = "downloaded_tasks";
 constexpr auto kTaskUrlKey = "url";
 constexpr auto kTaskPathKey = "path";
+constexpr auto kFontPathKey = "font_path";
 
 void Database::Save() {
     nlohmann::json database;
     // settings
     database[kSettingsKey] = nlohmann::json::object();
+    database[kSettingsKey][kFontPathKey] = font_path_;
 
     const auto save_task = [&database](std::string&& task_key, const auto task) {
         nlohmann::json task_json;
@@ -48,24 +51,31 @@ void Database::Save() {
 }
 
 void Database::Load() {
-    std::ifstream file(kDataBaseFileName);
-    if (!file.is_open()) {
-        std::cout << "no data base found" << std::endl;
-        return;
-    }
+    try {
+        std::ifstream file(kDataBaseFileName);
+        if (!file.is_open()) {
+            std::cout << "no data base found" << std::endl;
+            return;
+        }
 
-    nlohmann::json database;
-    file >> database;
+        nlohmann::json database;
+        file >> database;
 
-    // restore downloading task
-    for (const auto& task_json : database[kDownloadingTaskKey]) {
-        TaskStore::GetInstance().GetPendingList().Push(task_json[kTaskUrlKey]);
-    }
+        // restore seettings
+        font_path_ = database[kSettingsKey][kFontPathKey];
 
-    // restore downloaded task
-    for (const auto& task_json : database[kDownloadedTaskKey]) {
-        auto task = std::make_shared<Task>(task_json[kTaskUrlKey]);
-        task->SetFullPath(task_json[kTaskPathKey]);
-        TaskStore::GetInstance().AddDownloadedTask(task);
+        // restore downloading task
+        for (const auto& task_json : database[kDownloadingTaskKey]) {
+            TaskStore::GetInstance().GetPendingList().Push(task_json[kTaskUrlKey]);
+        }
+
+        // restore downloaded task
+        for (const auto& task_json : database[kDownloadedTaskKey]) {
+            auto task = std::make_shared<Task>(task_json[kTaskUrlKey]);
+            task->SetFullPath(task_json[kTaskPathKey]);
+            TaskStore::GetInstance().AddDownloadedTask(task);
+        }
+    } catch (const nlohmann::json::exception& e) {
+        std::cerr << "Load database failed:" << e.what() << std::endl;
     }
 }

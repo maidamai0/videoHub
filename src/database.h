@@ -15,11 +15,19 @@
 
 class Database {
    public:
-    static void Save();
-    static void Load();
+    static auto& GetInstance() {
+        static auto instance = Database();
+        return instance;
+    }
+
+    void Save();
+    void Load();
+
+    [[nodiscard]] const auto& GetFontPath() const {
+        return font_path_;
+    }
 
    private:
     Database() = default;
-    std::string http_proxy_;
-    std::string https_proxy_;
+    std::string font_path_;
 };

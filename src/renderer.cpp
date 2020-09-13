@@ -3,6 +3,7 @@
 #include <array>
 #include <memory>
 #include <queue>
+#include <string>
 
 #include "database.h"
 #include "imgui.h"
@@ -24,26 +25,11 @@ constexpr auto kMainWindowFlags = ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags
 constexpr auto kTaskWindowFlags =
     ImGuiWindowFlags_None | ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoScrollWithMouse;
 
-constexpr auto kNavigatorWidth = 200;
+constexpr auto kNavigatorWidth = 150;
 
 constexpr std::array<float, 4> kColorRed = {0.8F, 0.F, 0.0F, 1.0F};
 constexpr std::array<float, 4> kColorYellow = {1.0F, 0.88F, 0.2F, 1.0F};
 constexpr std::array<float, 4> kColorGreen = {0.0F, 0.4F, 0.0F, 1.0F};
-
-void custom_style() {
-    auto& style = ImGui::GetStyle();
-
-    style.WindowPadding = ImVec2{10, 10};
-
-    style.WindowRounding = 0.0F;
-    style.FrameRounding = 5.0F;
-    style.PopupRounding = 5.0F;
-    style.ScrollbarRounding = 5.0F;
-    style.GrabRounding = 5.0F;
-
-    style.WindowBorderSize = 1.0F;
-    style.FrameBorderSize = 1.0F;
-}
 
 void HelpMarker(const char* desc) {
     ImGui::TextDisabled("(?)");
@@ -57,6 +43,8 @@ void HelpMarker(const char* desc) {
 }
 
 Renderer::Renderer() : downloader_{std::make_unique<Downloader>()} {
+    Database::GetInstance().Load();
+
     // Setup Dear ImGui context
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
@@ -64,19 +52,24 @@ Renderer::Renderer() : downloader_{std::make_unique<Downloader>()} {
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;  // Enable Keyboard Controls
 
     // Setup Dear ImGui style
-    ImGui::StyleColorsLight();
+    ImGui::StyleColorsClassic();
 
     // Setup Platform/Renderer bindings
     ImGui_ImplGlfw_InitForOpenGL(MainWindow::GetInstance().GetWindow(), true);
     ImGui_ImplOpenGL3_Init(MainWindow::GetInstance().GetGLSLVersion().c_str());
 
     // Load Fonts
-    io.Fonts->AddFontFromMemoryCompressedTTF(
-        roboto_medium_compressed_data, roboto_medium_compressed_size, 16.0F);
+    const auto font_path = Database::GetInstance().GetFontPath();
+    if (font_path.empty()) {
+        // use default font
+        io.Fonts->AddFontFromMemoryCompressedTTF(
+            roboto_medium_compressed_data, roboto_medium_compressed_size, 16.0F);
+    } else {
+        // use custom font
+        io.Fonts->AddFontFromFileTTF(font_path.c_str(), 18.0F);
+    }
 
     custom_style();
-
-    Database::Load();
 }
 
 void Renderer::Render() {
@@ -154,12 +147,10 @@ void Renderer::draw_navigation_window() {
     }
 
     // theme
-    ImGui::SetCursorPos({15.0F, static_cast<float>(MainWindow::Height() - 50)});
+    ImGui::SetCursorPos({15.0F, static_cast<float>(MainWindow::Height() - 80)});
     ImGui::Separator();
     ImGui::Spacing();
-    if (ImGui::ShowStyleSelector("Theme##Selector")) {
-        custom_style();
-    }
+    style_selector();
 }
 
 void Renderer::draw_new_download_window() {
@@ -240,6 +231,14 @@ void Renderer::draw_downloaded_window() {
             if (ImGui::Button("Delete")) {
                 TaskStore::GetInstance().RemoveDownloadedTask(task);
             }
+            if (ImGui::Button("Open")) {
+                auto cmd = std::string("start ") + task->GetFullPath();
+                system(cmd.c_str());
+            }
+            if (ImGui::Button("Open in folder")) {
+                auto cmd = std::string("start ") + task->GetFullPath();
+                system(cmd.c_str());
+            }
             ImGui::EndPopup();
         }
 
@@ -252,8 +251,37 @@ void Renderer::draw_downloaded_window() {
 }
 
 void Renderer::Destroy() {
-    Database::Save();
+    Database::GetInstance().Save();
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext();
+}
+
+// copy from imgui_demo.cpp:ImGui::ShowStyleSelector
+void Renderer::style_selector() {
+    static int style_idx = 0;
+    if (ImGui::Combo("Color", &style_idx, "Classic\0Dark\0Light\0")) {
+        switch (style_idx) {
+            case 0: ImGui::StyleColorsClassic(); break;
+            case 1: ImGui::StyleColorsDark(); break;
+            case 2: ImGui::StyleColorsLight(); break;
+        }
+        return;
+        custom_style();
+    }
+}
+
+void Renderer::custom_style() {
+    auto& style = ImGui::GetStyle();
+
+    style.WindowPadding = ImVec2{10, 10};
+
+    style.WindowRounding = 0.0F;
+    style.FrameRounding = 5.0F;
+    style.PopupRounding = 5.0F;
+    style.ScrollbarRounding = 5.0F;
+    style.GrabRounding = 5.0F;
+
+    style.WindowBorderSize = 1.0F;
+    style.FrameBorderSize = 1.0F;
 }

@@ -21,6 +21,9 @@ class Renderer final {
     void draw_new_download_window();
     static void draw_downloading_window();
     static void draw_downloaded_window();
+    static void style_selector();
+    static void font_selector();
+    static void custom_style();
 
     enum class ContentType { kDownloading, kDownloaded };
 
