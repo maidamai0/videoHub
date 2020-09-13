@@ -1,5 +1,9 @@
 #include "../utility.hpp"
 
+#include <chrono>
+#include <iostream>
+#include <string>
+
 #include "doctest/doctest.h"
 
 TEST_CASE("utility_split_string") {
@@ -20,5 +24,25 @@ TEST_CASE("utility_split_string") {
         CHECK(res[3] == std::string(R"(45.17MiB)"));
         CHECK(res[5] == std::string(R"(70.71KiB/s)"));
         CHECK(res[7] == std::string(R"(10:54)"));
+    }
+}
+
+TEST_CASE("utility_duration_to_stirng") {
+    SUBCASE("1 sec") {
+        auto str = duration_to_stirng(std::chrono::seconds(1));
+        CHECK(str == "1s");
+        std::cout << str << std::endl;
+    }
+
+    SUBCASE("80 sec") {
+        auto str = duration_to_stirng(std::chrono::seconds(80));
+        CHECK(str == "1m 20s");
+        std::cout << str << std::endl;
+    }
+
+    SUBCASE("3700 sec") {
+        auto str = duration_to_stirng(std::chrono::seconds(3700));
+        CHECK(str == "1h 1m 40s");
+        std::cout << str << std::endl;
     }
 }
