@@ -104,6 +104,7 @@ class Downloader final {
         std::vector<string_type> cmd{string_type{"youtube-dl"}, task->GetUrl()};
         TinyProcessLib::Process ps{cmd, "", cout, cerr};
         ps.get_exit_status();
+        task->SetEndTime(Task::clock_type::now());
         TaskStore::GetInstance().RemoveDownloadingTask(task);
         TaskStore::GetInstance().AddDownloadedTask(task);
     }

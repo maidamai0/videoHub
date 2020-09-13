@@ -1,5 +1,6 @@
 #pragma once
 
+#include <chrono>
 #include <memory>
 #include <mutex>
 #include <string>
@@ -11,6 +12,7 @@ class Task final {
    public:
     using task_ptr = std::shared_ptr<Task>;
     using string_type = TinyProcessLib::Process::string_type;
+    using clock_type = std::chrono::system_clock;
 
     explicit Task(string_type&& url) : url_(url) {}
     Task() = default;
@@ -76,6 +78,14 @@ class Task final {
         return progress_ + "/" + total_size_;
     }
 
+    auto SetEndTime(clock_type::time_point tp) {
+        end_ = tp;
+    }
+
+    auto GetElapsedTime() const {
+        const auto duration = end_ - start_;
+    }
+
    private:
     string_type url_;
     string_type full_path_;
@@ -84,4 +94,7 @@ class Task final {
     string_type eta_;
     string_type progress_ = {};
     mutable std::mutex progress_mutex_;
+
+    std::chrono::time_point<clock_type> start_ = clock_type::now();
+    std::chrono::time_point<clock_type> end_;
 };

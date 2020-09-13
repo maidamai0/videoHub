@@ -34,6 +34,9 @@ link_libraries(imgui)
 
 link_libraries(tiny-process-library)
 include(CPack)
+
+# test
+include(CTest)
 enable_testing()
 
  set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
