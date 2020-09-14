@@ -233,13 +233,12 @@ void Renderer::draw_downloaded_window() {
                 TaskStore::GetInstance().RemoveDownloadedTask(task);
             }
             if (ImGui::Button("Open")) {
-                auto cmd = std::string("start ") + task->GetFullPath();
-                system(cmd.c_str());
+                auto full_path = std::filesystem::current_path() / task->GetFullPath();
+                open_file(full_path.string());
                 ImGui::CloseCurrentPopup();
             }
             if (ImGui::Button("Open in folder")) {
-                auto cmd = std::string("start ") + std::filesystem::current_path().string();
-                system(cmd.c_str());
+                open_file(std::filesystem::current_path().string());
                 ImGui::CloseCurrentPopup();
             }
             ImGui::EndPopup();

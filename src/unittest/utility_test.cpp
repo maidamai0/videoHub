@@ -46,3 +46,8 @@ TEST_CASE("utility_duration_to_stirng") {
         std::cout << str << std::endl;
     }
 }
+
+TEST_CASE("utility_get_name_from_quotes") {
+    auto test = std::string(R"(file is "12345asddfmmm"\nfsfj)");
+    CHECK(get_name_from_quotes(R"(file is "12345asddfmmm"\nfsfj)") == R"(12345asddfmmm)");
+}
