@@ -77,3 +77,14 @@ inline auto duration_to_stirng(std::chrono::system_clock::duration&& dur) {
 
     return str;
 }
+
+inline auto get_name_from_quotes(const std::string& str) {
+    const auto start = str.find('"') + 1;
+    const auto end = str.rfind('"');
+
+    return str.substr(start, end-start);
+}
+
+#ifdef _WIN32
+#include "utility_win.hpp"
+#endif

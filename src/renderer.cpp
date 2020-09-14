@@ -181,7 +181,7 @@ void Renderer::draw_downloading_window() {
 
         // progress bar
         if (unlikely(task->GetFullPath().empty())) {
-            ImGui::ProgressBar(0.0F, ImVec2(-1.0F, -1.0F), task->GetUrl().c_str());
+            ImGui::ProgressBar(0.0F, ImVec2(-1.0F, 0.0F), task->GetUrl().c_str());
         } else {
             auto progress = task->GetProgress();
             auto progresss_value =
@@ -194,13 +194,13 @@ void Renderer::draw_downloading_window() {
             ImGui::ProgressBar(
                 progresss_value, ImVec2(-1.0F, 0.0F), task->GetProgressAndSize().c_str());
             ImGui::PopStyleColor();
-
-            // file name
-            ImGui::Text("   * %s", task->GetFullPath().c_str());
-
-            // realtime description
-            ImGui::Text("   * %s", task->GetSpeed().c_str());
         }
+
+        // file name
+        ImGui::Text("   * %s", task->GetFullPath().c_str());
+
+        // realtime description
+        ImGui::Text("   * %s", task->GetSpeed().c_str());
 
         ImGui::EndChild();
         ImGui::PopStyleVar();
@@ -233,13 +233,12 @@ void Renderer::draw_downloaded_window() {
                 TaskStore::GetInstance().RemoveDownloadedTask(task);
             }
             if (ImGui::Button("Open")) {
-                auto cmd = std::string("start ") + task->GetFullPath();
-                system(cmd.c_str());
+                auto full_path = std::filesystem::current_path() / task->GetFullPath();
+                open_file(full_path.string());
                 ImGui::CloseCurrentPopup();
             }
             if (ImGui::Button("Open in folder")) {
-                auto cmd = std::string("start ") + std::filesystem::current_path().string();
-                system(cmd.c_str());
+                open_file(std::filesystem::current_path().string());
                 ImGui::CloseCurrentPopup();
             }
             ImGui::EndPopup();

@@ -32,6 +32,7 @@
 #include "task_store.hpp"
 #include "tiny_process/process.hpp"
 #include "utility.hpp"
+#include "logger.h"
 
 class Downloader final {
    public:
@@ -110,6 +111,16 @@ class Downloader final {
     }
 
     static void update_download_progress(const string_type& str, const task_ptr& task) {
+        if(str.find("[ffmpeg]") != std::string::npos) {
+            // use ffmpeg merge files
+            task->SetFullPath(get_name_from_quotes(str));
+            return ;
+        }
+
+        if(str.find("[download]") == std::string::npos) {
+            return;
+        }
+
         static constexpr auto kIndexProgress = 1;
         static constexpr auto kIndexTotalSize = kIndexProgress + 2;
         static constexpr auto kIndexSpeed = kIndexTotalSize + 2;
@@ -128,7 +139,7 @@ class Downloader final {
     }
 
     static void update_file_name(const string_type& str, const task_ptr& task) {
-        constexpr std::string_view kKey = "Destination:";
+        constexpr std::string_view kKey = "Destination: ";
         auto pos = str.find(kKey);
         if (pos != string_type::npos) {
             task->SetFullPath(str.substr(pos + kKey.size()));
