@@ -181,7 +181,7 @@ void Renderer::draw_downloading_window() {
 
         // progress bar
         if (unlikely(task->GetFullPath().empty())) {
-            ImGui::ProgressBar(0.0F, ImVec2(-1.0F, -1.0F), task->GetUrl().c_str());
+            ImGui::ProgressBar(0.0F, ImVec2(-1.0F, 0.0F), task->GetUrl().c_str());
         } else {
             auto progress = task->GetProgress();
             auto progresss_value =
@@ -194,13 +194,13 @@ void Renderer::draw_downloading_window() {
             ImGui::ProgressBar(
                 progresss_value, ImVec2(-1.0F, 0.0F), task->GetProgressAndSize().c_str());
             ImGui::PopStyleColor();
-
-            // file name
-            ImGui::Text("   * %s", task->GetFullPath().c_str());
-
-            // realtime description
-            ImGui::Text("   * %s", task->GetSpeed().c_str());
         }
+
+        // file name
+        ImGui::Text("   * %s", task->GetFullPath().c_str());
+
+        // realtime description
+        ImGui::Text("   * %s", task->GetSpeed().c_str());
 
         ImGui::EndChild();
         ImGui::PopStyleVar();
