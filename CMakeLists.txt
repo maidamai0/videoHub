@@ -1,11 +1,15 @@
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.17)
 
+cmake_policy(SET CMP0091 NEW)
 project(VideoHub)
 
 set(CMAKE_CXX_STANDARD 17)
 
 # compile commands
 set(CMAKE_COMPILE_COMMANDS on)
+
+# mvc runtime
+set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 
 # third party
 add_compile_definitions(
