@@ -67,7 +67,8 @@ Renderer::Renderer() : downloader_{std::make_unique<Downloader>()} {
             roboto_medium_compressed_data, roboto_medium_compressed_size, 16.0F);
     } else {
         // use custom font
-        io.Fonts->AddFontFromFileTTF(font_path.c_str(), 18.0F);
+        io.Fonts->AddFontFromFileTTF(
+            font_path.c_str(), 18.0F, nullptr, io.Fonts->GetGlyphRangesChineseFull());
     }
 
     custom_style();

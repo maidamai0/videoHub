@@ -27,12 +27,12 @@
 #include <utility>
 #include <vector>
 
+#include "logger.h"
 #include "task.hpp"
 #include "task_queue.hpp"
 #include "task_store.hpp"
 #include "tiny_process/process.hpp"
 #include "utility.hpp"
-#include "logger.h"
 
 class Downloader final {
    public:
@@ -102,7 +102,8 @@ class Downloader final {
 
         TaskStore::GetInstance().AddDownloadingTask(task);
 
-        std::vector<string_type> cmd{string_type{"youtube-dl"}, task->GetUrl()};
+        std::vector<string_type> cmd{
+            string_type{"youtube-dl"}, {"--encoding utf-8"}, task->GetUrl()};
         TinyProcessLib::Process ps{cmd, "", cout, cerr};
         ps.get_exit_status();
         task->SetEndTime(Task::clock_type::now());
@@ -111,13 +112,13 @@ class Downloader final {
     }
 
     static void update_download_progress(const string_type& str, const task_ptr& task) {
-        if(str.find("[ffmpeg]") != std::string::npos) {
+        if (str.find("[ffmpeg]") != std::string::npos) {
             // use ffmpeg merge files
             task->SetFullPath(get_name_from_quotes(str));
-            return ;
+            return;
         }
 
-        if(str.find("[download]") == std::string::npos) {
+        if (str.find("[download]") == std::string::npos) {
             return;
         }
 
