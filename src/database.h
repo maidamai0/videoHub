@@ -13,6 +13,9 @@
 
 #include <string>
 
+#include "logger.h"
+#include "spdlog/common.h"
+
 class Database {
    public:
     static auto& GetInstance() {
@@ -27,7 +30,32 @@ class Database {
         return font_path_;
     }
 
+    [[nodiscard]] auto GetLogLevel() const {
+        if (log_level_ == "trace") {
+            return spdlog::level::trace;
+        }
+
+        if (log_level_ == "debug") {
+            return spdlog::level::debug;
+        }
+
+        if (log_level_ == "info") {
+            return spdlog::level::info;
+        }
+
+        if (log_level_ == "warn") {
+            return spdlog::level::warn;
+        }
+
+        if (log_level_ == "err") {
+            return spdlog::level::err;
+        }
+
+        return spdlog::level::off;
+    }
+
    private:
     Database() = default;
     std::string font_path_;
+    std::string log_level_;
 };

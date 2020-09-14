@@ -2,6 +2,7 @@
 
 #include <memory>
 
+#include "database.h"
 #include "spdlog/common.h"
 #include "spdlog/logger.h"
 #include "spdlog/sinks/basic_file_sink.h"
@@ -25,7 +26,7 @@ Logger::Logger() {
     logger_->flush_on(spdlog::level::debug);
 
 #ifdef NDEBUG
-    logger->set_level(spdlog::level::info);
+    logger->set_level(Database::GetInstance().GetLogLevel());
 #else
     logger_->set_level(spdlog::level::trace);
 #endif

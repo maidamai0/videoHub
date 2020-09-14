@@ -19,12 +19,14 @@ constexpr auto kDownloadedTaskKey = "downloaded_tasks";
 constexpr auto kTaskUrlKey = "url";
 constexpr auto kTaskPathKey = "path";
 constexpr auto kFontPathKey = "font_path";
+constexpr auto kLogLevelKey = "log_level";
 
 void Database::Save() {
     nlohmann::json database;
     // settings
     database[kSettingsKey] = nlohmann::json::object();
     database[kSettingsKey][kFontPathKey] = font_path_;
+    database[kSettingsKey][kLogLevelKey] = log_level_;
 
     const auto save_task = [&database](std::string&& task_key, const auto task) {
         nlohmann::json task_json;
@@ -63,6 +65,7 @@ void Database::Load() {
 
         // restore seettings
         font_path_ = database[kSettingsKey][kFontPathKey];
+        log_level_ = database[kSettingsKey][kLogLevelKey];
 
         // restore downloading task
         for (const auto& task_json : database[kDownloadingTaskKey]) {
