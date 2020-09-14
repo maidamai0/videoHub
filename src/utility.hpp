@@ -51,7 +51,6 @@ inline auto interpolate(const std::array<float, 4>& start, const std::array<floa
 
 inline auto duration_to_stirng(std::chrono::system_clock::duration&& dur) {
     auto seconds = std::chrono::duration_cast<std::chrono::seconds>(dur).count();
-    std::cout << std::to_string(seconds) << " seconds is: ";
     std::string str;
 
     const auto hours = seconds / hour_in_seconds;
@@ -82,7 +81,7 @@ inline auto get_name_from_quotes(const std::string& str) {
     const auto start = str.find('"') + 1;
     const auto end = str.rfind('"');
 
-    return str.substr(start, end-start);
+    return str.substr(start, end - start);
 }
 
 #ifdef _WIN32
