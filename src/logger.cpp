@@ -26,7 +26,7 @@ Logger::Logger() {
     logger_->flush_on(spdlog::level::debug);
 
 #ifdef NDEBUG
-    logger->set_level(Database::GetInstance().GetLogLevel());
+    logger_->set_level(Database::GetInstance().GetLogLevel());
 #else
     logger_->set_level(spdlog::level::trace);
 #endif
