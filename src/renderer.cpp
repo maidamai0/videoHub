@@ -13,6 +13,7 @@
 #include "main_window.h"
 #include "resource_list.h"
 #include "roboto_medium.hpp"
+#include "state.hpp"
 #include "task.hpp"
 #include "task_queue.hpp"
 #include "task_store.hpp"
@@ -101,7 +102,7 @@ void Renderer::Render() {
     ImGui::NextColumn();
     ImGui::PushItemWidth(-1);
     ImGui::BeginChild("Content");
-    switch (content_type_) {
+    switch (State::GetInstance().GetContentType()) {
         case ContentType::kDownloading: {
             draw_downloading_window();
             break;
@@ -139,13 +140,13 @@ void Renderer::draw_navigation_window() {
     // downloading button
     ImGui::Spacing();
     if (ImGui::Button("Downloading", ImVec2(-FLT_MIN, 0.0F))) {
-        content_type_ = ContentType::kDownloading;
+        State::GetInstance().SetContentType(ContentType::kDownloading);
     }
 
     // downlaaded button
     ImGui::Spacing();
     if (ImGui::Button("Downloaded", ImVec2(-FLT_MIN, 0.0F))) {
-        content_type_ = ContentType::kDownloaded;
+        State::GetInstance().SetContentType(ContentType::kDownloaded);
     }
 
     // theme

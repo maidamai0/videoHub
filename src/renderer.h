@@ -25,8 +25,5 @@ class Renderer final {
     static void font_selector();
     static void custom_style();
 
-    enum class ContentType { kDownloading, kDownloaded };
-
     std::unique_ptr<Downloader> downloader_;
-    ContentType content_type_{ContentType::kDownloading};
 };
