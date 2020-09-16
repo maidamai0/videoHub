@@ -1,9 +1,13 @@
+#include <thread>
+
+#include "database.h"
+#include "fmt/ostream.h"
 #include "logger.h"
 #include "main_window.h"
 
 int main(int, char**) {
-    //  make sure logger is created at the first time.
-    Logger::GetInstance();
+    Database::GetInstance().Load();
+    LOG_I("main thread id is {}", std::this_thread::get_id());
     auto& main_window = MainWindow::GetInstance();
     main_window.Run();
 }

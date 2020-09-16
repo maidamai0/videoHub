@@ -51,7 +51,7 @@ class Database {
             return spdlog::level::err;
         }
 
-        return spdlog::level::off;
+        return spdlog::level::warn;
     }
 
    private:

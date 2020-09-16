@@ -45,8 +45,6 @@ void HelpMarker(const char* desc) {
 }
 
 Renderer::Renderer() : downloader_{std::make_unique<Downloader>()} {
-    Database::GetInstance().Load();
-
     // Setup Dear ImGui context
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();

@@ -68,6 +68,9 @@ void Database::Load() {
         font_path_ = database[kSettingsKey][kFontPathKey];
         log_level_ = database[kSettingsKey][kLogLevelKey];
 
+        Logger::GetInstance().SetLevel(GetLogLevel());
+        LOG_I("log level set to {}", log_level_);
+
         // restore downloading task
         for (const auto& task_json : database[kDownloadingTaskKey]) {
             TaskStore::GetInstance().GetPendingList().Push(task_json[kTaskUrlKey]);
