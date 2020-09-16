@@ -44,7 +44,7 @@ class Downloader final {
         for (std::remove_const<decltype(size)>::type i = 0; i < size; ++i) {
             workers_.push_back(std::make_unique<std::thread>(&Downloader::worker, this));
             thread_names_[workers_.back()->get_id()] = string_type{"worker #"} + std::to_string(i);
-            LOG_I("workd #{} started", std::to_string(i));
+            LOG_I("worker #{} started", std::to_string(i));
         }
     }
 
