@@ -44,7 +44,7 @@ class Downloader final {
         for (std::remove_const<decltype(size)>::type i = 0; i < size; ++i) {
             workers_.push_back(std::make_unique<std::thread>(&Downloader::worker, this));
             thread_names_[workers_.back()->get_id()] = string_type{"worker #"} + std::to_string(i);
-            std::cout << "worker #" + std::to_string(i) << " started" << std::endl;
+            LOG_I("workd #{} started", std::to_string(i));
         }
     }
 
@@ -53,9 +53,9 @@ class Downloader final {
         for (auto& worker : workers_) {
             auto id = worker->get_id();
             worker->join();
-            std::cout << thread_names_[id] << " exit" << std::endl;
+            LOG_I("{} exit", thread_names_[id]);
         }
-        std::cout << __FUNCTION__ << std::endl;
+        LOG_I(__FUNCTION__);
     }
 
    private:
@@ -72,7 +72,7 @@ class Downloader final {
 
     void download(task_ptr task) {
         assert(task);
-        std::cout << thread_names_[std::this_thread::get_id()] << " start to work" << std::endl;
+        LOG_D("{} start to work", thread_names_[std::this_thread::get_id()]);
 
         auto cout = [&task](const char* bytes, size_t n) {
             auto log = string_type(bytes, n);
@@ -83,21 +83,19 @@ class Downloader final {
                 update_download_progress(log, task);
             }
 
-            std::cout << log;
+            LOG_D(log);
             // auto split = split_string(string_type(bytes), " ");
             // fmt::print("{}\n", split);
             if (bytes[n - 1] != '\n') {
-                std::cout << "\n";
+                LOG_D("\n");
             }
-            std::flush(std::cout);
         };
 
         auto cerr = [](const char* bytes, size_t n) {
-            std::cout << string_type(bytes, n);
+            LOG_D(string_type(bytes, n));
             if (bytes[n - 1] != '\n') {
-                std::cout << "\n";
+                LOG_D("\n");
             }
-            std::flush(std::cout);
         };
 
         TaskStore::GetInstance().AddDownloadingTask(task);

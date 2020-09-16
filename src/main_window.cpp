@@ -8,7 +8,7 @@ int MainWindow::window_width_ = 850;
 int MainWindow::window_height_ = 580;
 
 void glfw_error_callback(int error, const char* description) {
-    fprintf(stderr, "Glfw Error %d: %s\n", error, description);
+    LOG_E("GLFW error {}:{}", error, description)
 }
 
 void window_size_callback(GLFWwindow* window, int width, int height) {

@@ -31,7 +31,7 @@ class TaskQueue {
     using value_type = Task::task_ptr;
 
     ~TaskQueue() {
-        std::cout << __FUNCTION__ << std::endl;
+        LOG_I(__FUNCTION__);
     }
 
     void Push(std::string&& url) {

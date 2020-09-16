@@ -18,7 +18,7 @@ class TaskStore final {
     }
 
     ~TaskStore() {
-        std::cout << __FUNCTION__ << std::endl;
+        LOG_I(__FUNCTION__)
     }
 
     void AddDownloadingTask(const task_ptr& task) {
@@ -50,7 +50,7 @@ class TaskStore final {
                 try {
                     std::filesystem::remove(task->GetFullPath());
                 } catch (std::filesystem::filesystem_error& e) {
-                    std::cout << "remove file failed:" << e.what() << std::endl;
+                    LOG_W("remove file failed:{}", e.what());
                 }
 
                 return true;

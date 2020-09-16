@@ -9,6 +9,7 @@
 #include <string>
 #include <type_traits>
 
+#include "logger.h"
 #include "nlohmann/json_fwd.hpp"
 #include "task_store.hpp"
 
@@ -56,7 +57,7 @@ void Database::Load() {
     try {
         std::ifstream file(kDataBaseFileName);
         if (!file.is_open()) {
-            std::cout << "no data base found" << std::endl;
+            LOG_W("no data base found");
             return;
         }
 
@@ -79,6 +80,6 @@ void Database::Load() {
             TaskStore::GetInstance().AddDownloadedTask(task);
         }
     } catch (const nlohmann::json::exception& e) {
-        std::cerr << "Load database failed:" << e.what() << std::endl;
+        LOG_W("Load database failed:{}", e.what());
     }
 }

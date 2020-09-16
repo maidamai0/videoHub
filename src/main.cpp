@@ -1,6 +1,9 @@
+#include "logger.h"
 #include "main_window.h"
 
 int main(int, char**) {
+    //  make sure logger is created at the first time.
+    Logger::GetInstance();
     auto& main_window = MainWindow::GetInstance();
     main_window.Run();
 }
