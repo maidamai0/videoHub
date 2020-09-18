@@ -158,12 +158,13 @@ void Renderer::draw_new_download_window() {
     if (ImGui::BeginPopup("download", ImGuiWindowFlags_NoMove)) {
         static std::array<char, 1024> url{};
         ImGui::PushItemWidth(-FLT_MIN);
-        if (ImGui::InputTextWithHint("Url", "download link", url.data(), url.size())) {
+        if (!ImGui::IsAnyItemActive() && !ImGui::IsMouseClicked(0)) {
             ImGui::SetKeyboardFocusHere();
         }
+        ImGui::InputTextWithHint("Url", "download link", url.data(), url.size());
 
-        if (ImGui::Button("OK", ImVec2(-FLT_MIN, 0.0F))) {
-            if (!url.empty()) {
+        if (ImGui::Button("OK", ImVec2(-1.0F, 0.0F))) {
+            if (!url.data()) {
                 TaskStore::GetInstance().GetPendingList().Push(std::string(url.data()));
                 url = {};
             }
