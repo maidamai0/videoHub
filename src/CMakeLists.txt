@@ -7,5 +7,5 @@
 
 file(GLOB src *.cpp)
 add_executable(${PROJECT_NAME} WIN32 ${src} file_icon.rc)
-target_link_libraries(${PROJECT_NAME} ${CMAKE_CURRENT_SOURCE_DIR}/window_icon.lib)
+target_link_libraries(${PROJECT_NAME} ${CMAKE_CURRENT_SOURCE_DIR}/window_icon.lib tracy_client)
 add_subdirectory(unittest)
