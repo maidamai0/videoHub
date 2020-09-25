@@ -3,6 +3,7 @@
 #include "renderer.h"
 #include "resource_list.h"
 #include "stb_image.h"
+#include "tracy/Tracy.hpp"
 
 int MainWindow::window_width_ = 850;
 int MainWindow::window_height_ = 580;
@@ -88,6 +89,8 @@ void MainWindow::Run() {
         renderer.Render();
 
         glfwSwapBuffers(window_);
+        FrameMark;
+
         int display_w = 0;
         int display_h = 0;
         glfwGetFramebufferSize(window_, &display_w, &display_h);

@@ -30,6 +30,8 @@ link_libraries(
     nlohmann_json nlohmann_json::nlohmann_json
 )
 
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/third_party)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/third_party/tracy)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/third_party/imgui)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/third_party/imgui/examples)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/third_party/glad/include)
