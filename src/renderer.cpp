@@ -164,7 +164,7 @@ void Renderer::draw_new_download_window() {
         ImGui::InputTextWithHint("Url", "download link", url.data(), url.size());
 
         if (ImGui::Button("OK", ImVec2(-1.0F, 0.0F))) {
-            if (!url.data()) {
+            if (!(url[0] == '\0')) {
                 TaskStore::GetInstance().GetPendingList().Push(std::string(url.data()));
                 url = {};
             }
